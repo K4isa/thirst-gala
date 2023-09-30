@@ -2,35 +2,42 @@ import { Container, Button } from 'react-bootstrap';
 import React, { useState } from 'react';
 import { ExclamationCircleIcon } from '@heroicons/react/20/solid'
 
-export default function Donation({ setDonation, setPayment }) {
+export default function Info({ setInfo, setSummary, contribution }) {
     const [emailError, setEmailError] = useState(false);
-    const [isNameHidden, setIsNameHidden] = useState(false);
-    const [name, setName] = useState('');
+    const [names, setNames] = useState([]);
     const [email, setEmail] = useState('');
-    const [comment, setComment] = useState('');
-    const [amount, setAmount] = useState(0);
-    const [percentage, setPercentage] = useState(0);
-    const [dedication, setDedication] = useState('');
-    const [isDedication, setIsDedication] = useState(false);
     const [nif, setNif] = useState('');
     const [isNif, setIsNif] = useState(false);
     const [nifError, setNifError] = useState(false);
+    const [checkboxChecked, setCheckboxChecked] = useState(false);
+    const [namesError, setNamesError] = useState(false);
 
-    const handleKeyPress = (event) => {
-        if (event.key === 'e') {
-          event.preventDefault();
+    const renderInputBoxes = () => {
+        const inputBoxes = [];
+        for (let i = 1; i < contribution.tickets; i++) {
+          inputBoxes.push(
+            <div key={i} className="relative mt-2 rounded-md shadow-sm">
+              <input
+                type="text"
+                name={`ticket-${i}`}
+                id={`ticket-${i}`}
+                className="block w-full rounded-sm border-0 py-1.5 pr-10 text-black-900 ring-2 ring-inset ring-thirst-blue placeholder:text-thirst-blue focus:ring-2 focus:ring-inset focus:ring-thirst-blue sm:text-sm sm:leading-6"
+                placeholder={`Nome do bilhete ${i + 1}`}
+                value={names[i] || ''}
+                onChange={(e) => handleNameChange(i, e.target.value)}
+              />
+            </div>
+          );
         }
+        return inputBoxes;
     };
 
-    const handleCheckboxChange = () => {
-      setIsNameHidden(!isNameHidden);
-      setName('');
-    };
-
-    const prepareAmount = (amount) => {
-        setAmount(amount);
-        setPercentage(Math.round(amount / 12000 * 100));
-    }
+    const handleNameChange = (index, value) => {
+        if (namesError) setNamesError(false);
+        const updatedNames = [...names];
+        updatedNames[index] = value;
+        setNames(updatedNames);
+      };
 
     const validateDonation = () => {
         const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
@@ -43,15 +50,21 @@ export default function Donation({ setDonation, setPayment }) {
             }
             setNifError(false);
         }
-        if (validEmail && !nifError) {
-            setDonation(prevDonation => ({...prevDonation, status: 'completed' }));
-            setPayment(prevPayment => ({...prevPayment, status: 'current' }));
-        }
-    }
 
-    const handleDedicationsChange = () => {
-        setIsDedication(!isDedication);
-        setDedication('');
+        if (names.length !== contribution.tickets || names.some(name => name.trim() === '')) {
+            setNamesError(true);
+        }
+        if (validEmail && !nifError && !namesError) {
+            const info = {
+                names: names,
+                tickets: contribution.tickets,
+                total: contribution.total,
+                nif: nif,
+                email: email,
+            }
+            setInfo(prevInfo => ({...prevInfo, status: 'completed' }));
+            setSummary(prevSummary => ({...prevSummary, status: 'current', info: info }));
+        }
     }
 
     const handleNifChange = () => {
@@ -60,26 +73,30 @@ export default function Donation({ setDonation, setPayment }) {
         setNifError(false);
     }
 
+    const handleKeyPress = (event) => {
+        if (event.key === 'e') {
+          event.preventDefault();
+        }
+    };
+
     return (
         <Container className="flex mx-auto mt-5">
             <div className="flex-1 p-8">
                 <h3 className="block text-xs font-bold leading-6 text-gray-900">
                     COMPLETE COM A SUA INFORMAÇÃO
                 </h3>
+                <div className="w-full mt-1 ring-1 ring-thirst-gray"/>
                 <div>
-                    <div className="relative mt-5 rounded-md shadow-sm">
+                    <div className="relative mt-8 rounded-md shadow-sm">
                         <input
                             type="text"
                             name="name"
                             id="name"
-                            className={`block w-full rounded-sm border-0 py-1.5 pr-10 text-black-900 ring-2 ring-inset ring-thirst-blue placeholder:text-thirst-blue focus:ring-2 focus:ring-inset focus:ring-thirst-blue sm:text-sm sm:leading-6 ${
-                                isNameHidden ? 'disabled' : ''
-                            }`}
+                            className="block w-full rounded-sm border-0 py-1.5 pr-10 text-black-900 ring-2 ring-inset ring-thirst-blue placeholder:text-thirst-blue focus:ring-2 focus:ring-inset focus:ring-thirst-blue sm:text-sm sm:leading-6"
                             placeholder="Nome"
                             aria-describedby="name"
-                            disabled={isNameHidden}
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
+                            value={names[0]}
+                            onChange={(e) => handleNameChange(0, e.target.value)}
                         />
                     </div>
                     <div className="relative flex items-start">
@@ -91,18 +108,24 @@ export default function Donation({ setDonation, setPayment }) {
                                 type="checkbox"
                                 className="h-3 w-3 rounded-full text-thirst-blue"
                                 style={{ boxShadow: 'none' }}
-                                onChange={handleCheckboxChange}
+                                onChange={() => { setCheckboxChecked(!checkboxChecked); if (!checkboxChecked) setNames([names[0]]); }}
                             />
                         </div>
                         <div className="ml-1 text-xxs leading-6">
                             <label htmlFor="comments" className=" text-gray-900">
-                                NÃO MOSTRAR O MEU NOME
+                                ATRIBUIR NOMES INDIVIDUAIS A CADA BILHETE
                             </label>
                         </div>
                     </div>
+                    {checkboxChecked && renderInputBoxes()}
+                    {namesError && (
+                        <p className="text-sm text-red-600" id="email-error">
+                            Preencha todos os campos
+                        </p>
+                    )}
                 </div>
                 <div>
-                    <div className="relative mt-5 rounded-md shadow-sm">
+                    <div className="relative mt-8 rounded-md shadow-sm">
                         <input
                             type="email"
                             name="email"
@@ -142,93 +165,21 @@ export default function Donation({ setDonation, setPayment }) {
                             </label>
                         </div>
                     </div>
-                </div>
-                <div className='mt-5'>
-                    <h3 className="block text-xs font-bold leading-6 text-gray-900">
-                        GOSTARIA DE DEIXAR UM COMENTÁRIO
+
+                    <h3 className="block text-xs mt-7 font-bold leading-6 text-gray-900">
+                        VALOR A PAGAR
                     </h3>
-                    <div className="mt-2">
-                        <textarea
-                            id="about"
-                            name="about"
-                            rows={3}
-                            className="block w-full rounded-sm border-0 py-1.5 text-gray-900 shadow-sm ring-2 ring-inset ring-thirst-blue placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-thirst-blue sm:text-sm sm:leading-6"
-                            value={comment}
-                            onChange={(e) => setComment(e.target.value)}
-                        />
-                    </div>
+                    <div className="w-full mt-1 ring-1 ring-thirst-gray"/>
+                    <p className="text-2xl mt-5 font-bold text-black">
+                        EUR€ {contribution.total}
+                    </p>
                 </div>
             </div>
             <div className="flex-1 p-8">
                 <h3 className="block text-xs font-bold leading-6 text-gray-900">
-                    QUAL O MONTANTE QUE DESEJA DOAR
+                    PAGAMENTO
                 </h3>
-                <div className="mt-5 flex justify-between">
-                    <Button
-                        className="rounded-md shadow-md bg-thirst-blue px-6 py-2 text-sm font-semibold text-white shadow-md hover:bg-thirst-blue "
-                        onClick={() => prepareAmount(1000)}
-                    >
-                        €1 000
-                    </Button>
-                    <Button
-                        className="rounded-md shadow-md bg-thirst-blue px-6 py-2 text-sm font-semibold text-white shadow-md hover:bg-thirst-blue"
-                        onClick={() => prepareAmount(6000)}    
-                    >
-                        €6 000
-                    </Button>
-                    <Button
-                        className="rounded-md shadow-md bg-thirst-blue px-6 py-2 text-sm font-semibold text-white shadow-md hover:bg-thirst-blue"
-                        onClick={() => prepareAmount(12000)}
-                    >
-                        €12 000
-                    </Button>
-                </div>
-                <div className="relative mt-5 rounded-md shadow-sm">
-                    <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                        <span className="text-thirst-blue sm:text-sm font-medium">EUR€</span>
-                    </div>
-                    <input
-                        type="number"
-                        name="price"
-                        id="price"
-                        className="block w-full rounded-sm border-0 py-1.5 pl-14 pr-6 text-gray-900 ring-2 ring-inset ring-thirst-blue placeholder:text-thirst-blue focus:ring-2 focus:ring-inset focus:ring-thirst-blue sm:text-sm sm:leading-6"
-                        placeholder="Outro"
-                        min="0"
-                        onChange={(e) => prepareAmount(e.target.value)}
-                    />
-                </div>
-                <div className="mt-4 relative flex items-start">
-                    <div className="flex h-6 items-center">
-                        <input
-                            id="honor"
-                            aria-describedby="honor"
-                            name="honor"
-                            type="checkbox"
-                            className="h-3 w-3 rounded-full text-thirst-blue"
-                            style={{ boxShadow: 'none' }}
-                            onChange={handleDedicationsChange}
-                        />
-                    </div>
-                    <div className="ml-1 text-xxs leading-6">
-                        <label htmlFor="email" className=" text-gray-900">
-                            DEDICAR A MINHA DOAÇÃO EM NOME OU MEMÓRIA DE ALGUÉM
-                        </label>
-                    </div>
-                </div>
-                {isDedication && (
-                    <div className="relative mb-3 rounded-md shadow-sm">
-                        <input
-                            type="text"
-                            name="name"
-                            id="dedication"
-                            className="block w-full rounded-sm border-0 py-1.5 pr-10 text-black-900 ring-2 ring-inset ring-thirst-blue placeholder:text-thirst-blue focus:ring-2 focus:ring-inset focus:ring-thirst-blue sm:text-sm sm:leading-6"
-                            placeholder="Nome"
-                            aria-describedby="name"
-                            value={dedication}
-                            onChange={(e) => setDedication(e.target.value)}
-                        />
-                    </div>
-                )}
+                <div className="w-full mt-1 ring-1 ring-thirst-gray"/>
                 <div className="relative flex items-start">
                     <div className="flex h-6 items-center">
                         <input
@@ -272,21 +223,10 @@ export default function Donation({ setDonation, setPayment }) {
                         NIF inválido
                     </p>
                 )}
-                <div className="w-full mt-3 ring-1 ring-thirst-blue"/>
-
-                <h3 className="block mt-5 text-xs font-bold leading-6 text-gray-900">
-                    RESUMO DA DOAÇÃO
-                </h3>
-
+                
                 <div className="mt-5 flex flex-col items-center justify-center">
-                    <p className="text-2xl font-bold text-thirst-blue">
-                        EUR€ {amount}
-                    </p>
-                    <p className="mt-4 text-sm font-medium text-gray-900">
-                        EQUIVALE A {percentage}% DE UM FURO
-                    </p>
                     <Button
-                        className="rounded-sm mt-8 bg-white/10 px-10 py-2 text-sm font-semibold text-thirst-blue shadow-md hover:bg-thirst-blue hover:text-white ring-2 ring-thirst-blue hover:ring-thirst-blue"
+                        className="rounded-sm mt-6 bg-white/10 px-10 py-2 text-sm font-semibold text-thirst-blue shadow-md hover:bg-thirst-blue hover:text-white ring-2 ring-thirst-blue hover:ring-thirst-blue"
                         onClick={validateDonation}    
                     >
                         CONTINUAR
@@ -294,5 +234,5 @@ export default function Donation({ setDonation, setPayment }) {
                 </div>
             </div>
         </Container>
-    )
+    ) 
 }

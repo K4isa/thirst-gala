@@ -1,18 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import Donation from '../components/Donation';
-import Payment from '../components/Payment';
+import React, { useState } from 'react';
+import Ticket from '../components/Ticket';
+import Contribution from '../components/Contribution';
+import Info from '../components/Info';
 import Summary from '../components/Summary';
 import { Container } from 'react-bootstrap';
 
-export default function Ticket() {
-    const [donation, setDonation] = useState({ name: '1. DOAÇÃO', status: 'current' });
-    const [payment, setPayment] = useState({ name: '2. PAGAMENTO', status: 'upcoming' });
-    const [summary, setSummary] = useState({ name: '3. RESUMO', status: 'upcoming' });  
+export default function TicketPage() {
+    const [ticket, setTicket] = useState({ name: '1. BILHETE', status: 'current' });
+    const [contribution, setContribution] = useState({ name: '2. CONTRIBUIÇÃO', status: 'upcoming' });
+    const [info, setInfo] = useState({ name: '3. INFO & PAGAMENTO', status: 'upcoming' });
+    const [summary, setSummary] = useState({ name: '3. RESUMO', status: 'upcoming' });
 
     return (
       <Container className="mt-4 mx-auto p-14">
         <div className="flex flex-row md:space-x-32 md:space-y-0">
-          {[donation, payment, summary].map((step) => (
+          {[ticket, contribution, info, summary].map((step) => (
             <div
               onClick={step.function}
               className="me-5"
@@ -22,14 +24,17 @@ export default function Ticket() {
             </div>
           ))}
         </div>
-        {donation.status === 'current' && (
-          <Donation setDonation={setDonation} setPayment={setPayment} />
+        {ticket.status === 'current' && (
+          <Ticket setTicket={setTicket} setContribution={setContribution} />
         )}
-        {payment.status === 'current' && (
-          <Payment setPayment={setPayment} setSummary={setSummary} />
+        {contribution.status === 'current' && (
+          <Contribution contribution={contribution} setContribution={setContribution} setInfo={setInfo} />
+        )}
+        {info.status === 'current' && (
+          <Info setInfo={setInfo} setSummary={setSummary} contribution={contribution} />
         )}
         {summary.status === 'current' && (
-          <Summary setSummary={setSummary} />
+          <Summary setSummary={setSummary} summary={summary} />
         )}
       </Container>
     )

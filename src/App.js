@@ -3,7 +3,8 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 import './style/App.css';
 
-import Ticket from './pages/Ticket';
+import DonationPage from './pages/Donation';
+import TicketPage from './pages/Ticket';
 // import NotFound from './pages/error/NotFound';
 
 function App() {
@@ -12,8 +13,8 @@ function App() {
       <Routes>
         {/* public routes */}
         {/* <Route path='/' element={<HomePage />} /> */}
-        <Route path='/ticket' element={<Ticket />} />
-
+        <Route path='/donation' element={<DonationPage />} />
+        <Route path='/ticket' element={<TicketPage />} />
         {/* 404 */}
         {/* <Route path='*' element={<NotFound />} /> */}
       </Routes>
