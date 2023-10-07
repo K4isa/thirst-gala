@@ -1,16 +1,19 @@
 import { Container, Button } from 'react-bootstrap';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ExclamationCircleIcon } from '@heroicons/react/20/solid'
+import TermsModal from '../modals/TermsModal';
 
 export default function Info({ setInfo, setSummary, contribution }) {
     const [emailError, setEmailError] = useState(false);
     const [names, setNames] = useState([]);
     const [email, setEmail] = useState('');
-    const [nif, setNif] = useState('');
+    const [nif, setNif] = useState({nif: '', name: '', address: ''});
     const [isNif, setIsNif] = useState(false);
-    const [nifError, setNifError] = useState(false);
+    const [nifError, setNifError] = useState({nif: false, name: false, address: false});
     const [checkboxChecked, setCheckboxChecked] = useState(false);
     const [namesError, setNamesError] = useState(false);
+    const [futureContact, setFutureContact] = useState(false);
+    const [termsVisible, setTermsVisible] = useState(false);
 
     const renderInputBoxes = () => {
         const inputBoxes = [];
@@ -44,33 +47,47 @@ export default function Info({ setInfo, setSummary, contribution }) {
         const validEmail = emailRegex.test(email);
         setEmailError(!validEmail);
         if (isNif) {
-            if (nif.length !== 9 || !/^\d+$/.test(nif)) {
-                setNifError(true);
-                return;
+            if (nif.nif.length !== 9 || !/^\d+$/.test(nif.nif)) {
+                setNifError(prevNif => ({...prevNif, nif: true }));
             }
-            setNifError(false);
+            if (nif.name.trim() === '') {
+                setNifError(prevName => ({...prevName, name: true }));
+            }
+            if (nif.address.trim() === '') {
+                setNifError(prevAddress => ({...prevAddress, address: true }));
+            }
         }
 
         if (names.length !== contribution.tickets || names.some(name => name.trim() === '')) {
             setNamesError(true);
         }
-        if (validEmail && !nifError && !namesError) {
+        if (validEmail && !nifError.nif && !nifError.name && !nifError.address && !namesError) {
             const info = {
                 names: names,
                 tickets: contribution.tickets,
                 total: contribution.total,
                 nif: nif,
                 email: email,
+                futureContact: futureContact
             }
+            console.log(info);
             setInfo(prevInfo => ({...prevInfo, status: 'completed' }));
-            setSummary(prevSummary => ({...prevSummary, status: 'current', info: info }));
+            setSummary(prevSummary => ({...prevSummary, status: 'current', info }));
         }
+    }
+
+    const handleContactChange = () => {
+        setFutureContact(!futureContact);
     }
 
     const handleNifChange = () => {
         setIsNif(!isNif);
-        setNif('');
-        setNifError(false);
+        setNif({nif: '', name: '', address: ''});
+        setNifError({nif: false, name: false, address: false});
+    }
+
+    const handleTermsChange = () => {
+        setTermsVisible(!termsVisible);
     }
 
     const handleKeyPress = (event) => {
@@ -78,6 +95,10 @@ export default function Info({ setInfo, setSummary, contribution }) {
           event.preventDefault();
         }
     };
+
+    useEffect(() => {
+        console.log(contribution);
+    }, []);
 
     return (
         <Container className="flex mx-auto mt-5">
@@ -99,24 +120,26 @@ export default function Info({ setInfo, setSummary, contribution }) {
                             onChange={(e) => handleNameChange(0, e.target.value)}
                         />
                     </div>
-                    <div className="relative flex items-start">
-                        <div className="flex h-6 items-center">
-                            <input
-                                id="hide-name"
-                                aria-describedby="name"
-                                name="name"
-                                type="checkbox"
-                                className="h-3 w-3 rounded-full text-thirst-blue"
-                                style={{ boxShadow: 'none' }}
-                                onChange={() => { setCheckboxChecked(!checkboxChecked); if (!checkboxChecked) setNames([names[0]]); }}
-                            />
+                    {contribution.tickets > 1 && (
+                        <div className="relative flex items-start">
+                            <div className="flex h-6 items-center">
+                                <input
+                                    id="hide-name"
+                                    aria-describedby="name"
+                                    name="name"
+                                    type="checkbox"
+                                    className="h-3 w-3 rounded-full text-thirst-blue"
+                                    style={{ boxShadow: 'none' }}
+                                    onChange={() => { setCheckboxChecked(!checkboxChecked); if (!checkboxChecked) setNames([names[0]]); }}
+                                />
+                            </div>
+                            <div className="ml-1 text-xxs leading-6">
+                                <label htmlFor="comments" className=" text-gray-900">
+                                    ATRIBUIR NOMES INDIVIDUAIS A CADA BILHETE
+                                </label>
+                            </div>
                         </div>
-                        <div className="ml-1 text-xxs leading-6">
-                            <label htmlFor="comments" className=" text-gray-900">
-                                ATRIBUIR NOMES INDIVIDUAIS A CADA BILHETE
-                            </label>
-                        </div>
-                    </div>
+                    )}
                     {checkboxChecked && renderInputBoxes()}
                     {namesError && (
                         <p className="text-sm text-red-600" id="email-error">
@@ -157,6 +180,7 @@ export default function Info({ setInfo, setSummary, contribution }) {
                                 type="checkbox"
                                 className="h-3 w-3 rounded-full text-thirst-blue"
                                 style={{ boxShadow: 'none' }}
+                                onChange={handleContactChange}
                             />
                         </div>
                         <div className="ml-1 text-xxs leading-6">
@@ -171,7 +195,7 @@ export default function Info({ setInfo, setSummary, contribution }) {
                     </h3>
                     <div className="w-full mt-1 ring-1 ring-thirst-gray"/>
                     <p className="text-2xl mt-5 font-bold text-black">
-                        EUR€ {contribution.total}
+                        EUR€ {contribution.total ? contribution.total : contribution.tickets * 25}
                     </p>
                 </div>
             </div>
@@ -199,31 +223,85 @@ export default function Info({ setInfo, setSummary, contribution }) {
                     </div>
                 </div>
                 {isNif && (
-                    <div className="relative rounded-md shadow-sm">
-                        <input
-                            type="number"
-                            name="name"
-                            id="dedication"
-                            className="block w-full rounded-sm border-0 py-1.5 pr-10 text-black-900 ring-2 ring-inset ring-thirst-blue placeholder:text-thirst-blue focus:ring-2 focus:ring-inset focus:ring-thirst-blue sm:text-sm sm:leading-6"
-                            placeholder="NIF"
-                            aria-describedby="name"
-                            value={nif}
-                            onKeyPress={handleKeyPress}
-                            onChange={(e) => { setNif(e.target.value); if (nifError) setNifError(false); }}
-                        />
-                        {nifError && (
-                            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
-                                <ExclamationCircleIcon className="h-5 w-5 text-red-500" aria-hidden="true" />
-                            </div>
+                    <>
+                        <div className="relative rounded-md shadow-sm">
+                            <input
+                                type="text"
+                                name="name"
+                                id="dedication"
+                                className="block mt-1 w-full rounded-sm border-0 py-1.5 pr-10 text-black-900 ring-2 ring-inset ring-thirst-blue placeholder:text-thirst-blue focus:ring-2 focus:ring-inset focus:ring-thirst-blue sm:text-sm sm:leading-6"
+                                placeholder="Nome de emissão da fatura"
+                                aria-describedby="name"
+                                value={nif.name}
+                                onChange={(e) => { setNif(prevName => ({...prevName, name: e.target.value })); if (nifError.address) setNifError(prevName => ({...prevName, name: false })); }}
+                            />
+                            {nifError.name && (
+                                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+                                    <ExclamationCircleIcon className="h-5 w-5 text-red-500" aria-hidden="true" />
+                                </div>
+                            )}
+                        </div>
+                        {nifError.name && (
+                            <p className="text-sm mb-2 text-red-600" id="name-error">
+                                Nome inválido
+                            </p>
                         )}
-                    </div>
-                )}
-                {nifError && (
-                    <p className="text-sm mb-2 text-red-600" id="email-error">
-                        NIF inválido
-                    </p>
+                        <div className="relative rounded-md shadow-sm">
+                            <input
+                                type="number"
+                                name="nif"
+                                id="dedication"
+                                className="block w-full mt-4 rounded-sm border-0 py-1.5 pr-10 text-black-900 ring-2 ring-inset ring-thirst-blue placeholder:text-thirst-blue focus:ring-2 focus:ring-inset focus:ring-thirst-blue sm:text-sm sm:leading-6"
+                                placeholder="NIF"
+                                aria-describedby="nif"
+                                value={nif.nif}
+                                onKeyPress={handleKeyPress}
+                                onChange={(e) => { setNif(prevNif => ({...prevNif, nif: e.target.value })); if (nifError.nif) setNifError(prevNif => ({...prevNif, nif: false })); }}
+                            />
+                            {nifError.nif && (
+                                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+                                    <ExclamationCircleIcon className="h-5 w-5 text-red-500" aria-hidden="true" />
+                                </div>
+                            )}
+                        </div>
+                        {nifError.nif && (
+                            <p className="text-sm mb-2 text-red-600" id="nif-error">
+                                NIF inválido
+                            </p>
+                        )}
+                        <div className="relative rounded-md shadow-sm">
+                            <input
+                                type="text"
+                                name="address"
+                                id="dedication"
+                                className="block w-full mt-4 rounded-sm border-0 py-1.5 pr-10 text-black-900 ring-2 ring-inset ring-thirst-blue placeholder:text-thirst-blue focus:ring-2 focus:ring-inset focus:ring-thirst-blue sm:text-sm sm:leading-6"
+                                placeholder="Morada"
+                                aria-describedby="address"
+                                value={nif.address}
+                                onChange={(e) => { setNif(prevAddress => ({...prevAddress, address: e.target.value })); if (nifError.address) setNifError(prevAddress => ({...prevAddress, address: false })); }}
+                            />
+                            {nifError.address && (
+                                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+                                    <ExclamationCircleIcon className="h-5 w-5 text-red-500" aria-hidden="true" />
+                                </div>
+                            )}
+                        </div>
+                        {nifError.address && (
+                            <p className="text-sm mb-2 text-red-600" id="address-error">
+                                Morada inválida
+                            </p>
+                        )}
+                    </>
                 )}
                 
+                <div className="relative flex items-start">
+                    <Button
+                        className="text-left ml-1 text-xxs leading-6 text-gray-900 hover:text-thirst-blue hover:font-bold"
+                        onClick={handleTermsChange}
+                    >
+                        ACEITO OS TERMOS E CONDIÇÕES DA GALA DO THIRST PROJECT PORTUGAL
+                    </Button>
+                </div>
                 <div className="mt-5 flex flex-col items-center justify-center">
                     <Button
                         className="rounded-sm mt-6 bg-white/10 px-10 py-2 text-sm font-semibold text-thirst-blue shadow-md hover:bg-thirst-blue hover:text-white ring-2 ring-thirst-blue hover:ring-thirst-blue"
@@ -233,6 +311,9 @@ export default function Info({ setInfo, setSummary, contribution }) {
                     </Button>
                 </div>
             </div>
+            {termsVisible && (
+                <TermsModal setTermsVisible={setTermsVisible} />
+            )}
         </Container>
     ) 
 }

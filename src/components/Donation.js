@@ -6,15 +6,19 @@ export default function Donation({ setDonation, setPayment }) {
     const [emailError, setEmailError] = useState(false);
     const [isNameHidden, setIsNameHidden] = useState(false);
     const [name, setName] = useState('');
+    const [nameError, setNameError] = useState(false);
     const [email, setEmail] = useState('');
     const [comment, setComment] = useState('');
-    const [amount, setAmount] = useState(0);
+    const [amount, setAmount] = useState('Outro');
+    const [amountError, setAmountError] = useState(false);
     const [percentage, setPercentage] = useState(0);
     const [dedication, setDedication] = useState('');
     const [isDedication, setIsDedication] = useState(false);
-    const [nif, setNif] = useState('');
+    const [dedicationError, setDedicationError] = useState(false);
+    const [nif, setNif] = useState({nif: '', name: '', address: ''});
     const [isNif, setIsNif] = useState(false);
-    const [nifError, setNifError] = useState(false);
+    const [nifError, setNifError] = useState({nif: false, name: false, address: false});
+    const [futureContact, setFutureContact] = useState(false);
 
     const handleKeyPress = (event) => {
         if (event.key === 'e') {
@@ -23,13 +27,15 @@ export default function Donation({ setDonation, setPayment }) {
     };
 
     const handleCheckboxChange = () => {
-      setIsNameHidden(!isNameHidden);
-      setName('');
+        setIsNameHidden(!isNameHidden);
+        setName('');
+        setNameError(false);
     };
 
     const prepareAmount = (amount) => {
-        setAmount(amount);
-        setPercentage(Math.round(amount / 12000 * 100));
+        if (amountError) setAmountError(false);
+        setAmount(parseFloat(amount));
+        setPercentage(Math.round(parseFloat(amount) / 12000 * 100));
     }
 
     const validateDonation = () => {
@@ -37,27 +43,56 @@ export default function Donation({ setDonation, setPayment }) {
         const validEmail = emailRegex.test(email);
         setEmailError(!validEmail);
         if (isNif) {
-            if (nif.length !== 9 || !/^\d+$/.test(nif)) {
-                setNifError(true);
-                return;
+            console.log(nif);
+            if (nif.nif.length !== 9 || !/^\d+$/.test(nif.nif)) {
+                setNifError(prevNif => ({...prevNif, nif: true }));
             }
-            setNifError(false);
+            if (nif.name.trim() === '') {
+                setNifError(prevName => ({...prevName, name: true }));
+            }
+            if (nif.address.trim() === '') {
+                setNifError(prevAddress => ({...prevAddress, address: true }));
+            }
         }
-        if (validEmail && !nifError) {
+        if (!isNameHidden && name.trim() === '') {
+            setNameError(true);
+        }
+        if (isDedication && dedication.trim() === '') {
+            setDedicationError(true);
+        }
+        console.log(amount === 0);
+        if (amount === 0 || amount === '' || amount ==='Outro') {
+            setAmountError(true);
+        }
+        if (!dedicationError && !nameError && !amountError && validEmail && !nifError.nif && !nifError.name && !nifError.address) {
+            const info = {
+                name: name,
+                total: amount,
+                nif: nif,
+                email: email,
+                futureContact: futureContact,
+                comment: comment,
+                dedication: dedication
+            }
             setDonation(prevDonation => ({...prevDonation, status: 'completed' }));
-            setPayment(prevPayment => ({...prevPayment, status: 'current' }));
+            setPayment(prevPayment => ({...prevPayment, status: 'current', info }));
         }
     }
 
     const handleDedicationsChange = () => {
         setIsDedication(!isDedication);
         setDedication('');
+        setDedicationError(false);
+    }
+
+    const handleContactChange = () => {
+        setFutureContact(!futureContact);
     }
 
     const handleNifChange = () => {
         setIsNif(!isNif);
-        setNif('');
-        setNifError(false);
+        setNif({nif: '', name: '', address: ''});
+        setNifError({nif: false, name: false, address: false});
     }
 
     return (
@@ -79,9 +114,19 @@ export default function Donation({ setDonation, setPayment }) {
                             aria-describedby="name"
                             disabled={isNameHidden}
                             value={name}
-                            onChange={(e) => setName(e.target.value)}
+                            onChange={(e) => { setName(e.target.value); if (nameError) setNameError(false); }}
                         />
+                        {nameError && (
+                                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+                                    <ExclamationCircleIcon className="h-5 w-5 text-red-500" aria-hidden="true" />
+                                </div>
+                            )}
                     </div>
+                    {nameError && (
+                        <p className="text-sm text-red-600" id="email-error">
+                            Nome inválido
+                        </p>
+                    )}
                     <div className="relative flex items-start">
                         <div className="flex h-6 items-center">
                             <input
@@ -134,6 +179,7 @@ export default function Donation({ setDonation, setPayment }) {
                                 type="checkbox"
                                 className="h-3 w-3 rounded-full text-thirst-blue"
                                 style={{ boxShadow: 'none' }}
+                                onChange={handleContactChange}
                             />
                         </div>
                         <div className="ml-1 text-xxs leading-6">
@@ -193,10 +239,22 @@ export default function Donation({ setDonation, setPayment }) {
                         id="price"
                         className="block w-full rounded-sm border-0 py-1.5 pl-14 pr-6 text-gray-900 ring-2 ring-inset ring-thirst-blue placeholder:text-thirst-blue focus:ring-2 focus:ring-inset focus:ring-thirst-blue sm:text-sm sm:leading-6"
                         placeholder="Outro"
+                        value={amount}
+                        onKeyPress={handleKeyPress}
                         min="0"
-                        onChange={(e) => prepareAmount(e.target.value)}
+                        onChange={(e) => { prepareAmount(e.target.value); if (amountError) setAmountError(false); }}
                     />
+                    {amountError && (
+                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+                            <ExclamationCircleIcon className="h-5 w-5 text-red-500" aria-hidden="true" />
+                        </div>
+                    )}
                 </div>
+                {amountError && (
+                    <p className="text-sm mb-2 text-red-600" id="email-error">
+                        Insira um montante válido
+                    </p>
+                )}
                 <div className="mt-4 relative flex items-start">
                     <div className="flex h-6 items-center">
                         <input
@@ -216,20 +274,32 @@ export default function Donation({ setDonation, setPayment }) {
                     </div>
                 </div>
                 {isDedication && (
-                    <div className="relative mb-3 rounded-md shadow-sm">
-                        <input
-                            type="text"
-                            name="name"
-                            id="dedication"
-                            className="block w-full rounded-sm border-0 py-1.5 pr-10 text-black-900 ring-2 ring-inset ring-thirst-blue placeholder:text-thirst-blue focus:ring-2 focus:ring-inset focus:ring-thirst-blue sm:text-sm sm:leading-6"
-                            placeholder="Nome"
-                            aria-describedby="name"
-                            value={dedication}
-                            onChange={(e) => setDedication(e.target.value)}
-                        />
-                    </div>
+                    <>
+                        <div className="relative mt-2 rounded-md shadow-sm">
+                            <input
+                                type="text"
+                                name="name"
+                                id="dedication"
+                                className="block w-full rounded-sm border-0 py-1.5 pr-10 text-black-900 ring-2 ring-inset ring-thirst-blue placeholder:text-thirst-blue focus:ring-2 focus:ring-inset focus:ring-thirst-blue sm:text-sm sm:leading-6"
+                                placeholder="Nome"
+                                aria-describedby="name"
+                                value={dedication}
+                                onChange={(e) => { setDedication(e.target.value); if (dedicationError) setDedicationError(false); }}
+                            />
+                            {dedicationError && (
+                                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+                                    <ExclamationCircleIcon className="h-5 w-5 text-red-500" aria-hidden="true" />
+                                </div>
+                            )}
+                        </div>
+                        {dedicationError && (
+                            <p className="text-sm mb-2 text-red-600" id="email-error">
+                                Nome inválido
+                            </p>
+                        )}
+                    </>
                 )}
-                <div className="relative flex items-start">
+                <div className="relative mt-3 flex items-start">
                     <div className="flex h-6 items-center">
                         <input
                             id="nif"
@@ -248,29 +318,75 @@ export default function Donation({ setDonation, setPayment }) {
                     </div>
                 </div>
                 {isNif && (
-                    <div className="relative rounded-md shadow-sm">
-                        <input
-                            type="number"
-                            name="name"
-                            id="dedication"
-                            className="block w-full rounded-sm border-0 py-1.5 pr-10 text-black-900 ring-2 ring-inset ring-thirst-blue placeholder:text-thirst-blue focus:ring-2 focus:ring-inset focus:ring-thirst-blue sm:text-sm sm:leading-6"
-                            placeholder="NIF"
-                            aria-describedby="name"
-                            value={nif}
-                            onKeyPress={handleKeyPress}
-                            onChange={(e) => { setNif(e.target.value); if (nifError) setNifError(false); }}
-                        />
-                        {nifError && (
-                            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
-                                <ExclamationCircleIcon className="h-5 w-5 text-red-500" aria-hidden="true" />
-                            </div>
+                    <>
+                        <div className="relative rounded-md shadow-sm">
+                            <input
+                                type="text"
+                                name="name"
+                                id="dedication"
+                                className="block mt-1 w-full rounded-sm border-0 py-1.5 pr-10 text-black-900 ring-2 ring-inset ring-thirst-blue placeholder:text-thirst-blue focus:ring-2 focus:ring-inset focus:ring-thirst-blue sm:text-sm sm:leading-6"
+                                placeholder="Nome de emissão da fatura"
+                                aria-describedby="name"
+                                value={nif.name}
+                                onChange={(e) => { setNif(prevName => ({...prevName, name: e.target.value })); if (nifError.address) setNifError(prevName => ({...prevName, name: false })); }}
+                            />
+                            {nifError.name && (
+                                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+                                    <ExclamationCircleIcon className="h-5 w-5 text-red-500" aria-hidden="true" />
+                                </div>
+                            )}
+                        </div>
+                        {nifError.name && (
+                            <p className="text-sm mb-2 text-red-600" id="name-error">
+                                Nome inválido
+                            </p>
                         )}
-                    </div>
-                )}
-                {nifError && (
-                    <p className="text-sm mb-2 text-red-600" id="email-error">
-                        NIF inválido
-                    </p>
+                        <div className="relative rounded-md shadow-sm">
+                            <input
+                                type="number"
+                                name="nif"
+                                id="dedication"
+                                className="block w-full mt-4 rounded-sm border-0 py-1.5 pr-10 text-black-900 ring-2 ring-inset ring-thirst-blue placeholder:text-thirst-blue focus:ring-2 focus:ring-inset focus:ring-thirst-blue sm:text-sm sm:leading-6"
+                                placeholder="NIF"
+                                aria-describedby="nif"
+                                value={nif.nif}
+                                onKeyPress={handleKeyPress}
+                                onChange={(e) => { setNif(prevNif => ({...prevNif, nif: e.target.value })); if (nifError.nif) setNifError(prevNif => ({...prevNif, nif: false })); }}
+                            />
+                            {nifError.nif && (
+                                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+                                    <ExclamationCircleIcon className="h-5 w-5 text-red-500" aria-hidden="true" />
+                                </div>
+                            )}
+                        </div>
+                        {nifError.nif && (
+                            <p className="text-sm mb-2 text-red-600" id="nif-error">
+                                NIF inválido
+                            </p>
+                        )}
+                        <div className="relative rounded-md shadow-sm">
+                            <input
+                                type="text"
+                                name="address"
+                                id="dedication"
+                                className="block w-full mt-4 rounded-sm border-0 py-1.5 pr-10 text-black-900 ring-2 ring-inset ring-thirst-blue placeholder:text-thirst-blue focus:ring-2 focus:ring-inset focus:ring-thirst-blue sm:text-sm sm:leading-6"
+                                placeholder="Morada"
+                                aria-describedby="address"
+                                value={nif.address}
+                                onChange={(e) => { setNif(prevAddress => ({...prevAddress, address: e.target.value })); if (nifError.address) setNifError(prevAddress => ({...prevAddress, address: false })); }}
+                            />
+                            {nifError.address && (
+                                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+                                    <ExclamationCircleIcon className="h-5 w-5 text-red-500" aria-hidden="true" />
+                                </div>
+                            )}
+                        </div>
+                        {nifError.address && (
+                            <p className="text-sm mb-2 text-red-600" id="address-error">
+                                Morada inválida
+                            </p>
+                        )}
+                    </>
                 )}
                 <div className="w-full mt-3 ring-1 ring-thirst-blue"/>
 
@@ -280,7 +396,7 @@ export default function Donation({ setDonation, setPayment }) {
 
                 <div className="mt-5 flex flex-col items-center justify-center">
                     <p className="text-2xl font-bold text-thirst-blue">
-                        EUR€ {amount}
+                        EUR€ {amount === 'Outro' ? 0 : amount}
                     </p>
                     <p className="mt-4 text-sm font-medium text-gray-900">
                         EQUIVALE A {percentage}% DE UM FURO

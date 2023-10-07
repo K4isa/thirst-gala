@@ -26,7 +26,7 @@ export default function DonationPage() {
           <Donation setDonation={setDonation} setPayment={setPayment} />
         )}
         {payment.status === 'current' && (
-          <Payment setPayment={setPayment} setSummary={setSummary} />
+          <Payment setPayment={setPayment} setSummary={setSummary} payment={payment} />
         )}
         {summary.status === 'current' && (
           <Summary setSummary={setSummary} />

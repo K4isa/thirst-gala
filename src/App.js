@@ -5,6 +5,7 @@ import './style/App.css';
 
 import DonationPage from './pages/Donation';
 import TicketPage from './pages/Ticket';
+import HomePage from './pages/HomePage';
 // import NotFound from './pages/error/NotFound';
 
 function App() {
@@ -15,6 +16,7 @@ function App() {
         {/* <Route path='/' element={<HomePage />} /> */}
         <Route path='/donation' element={<DonationPage />} />
         <Route path='/ticket' element={<TicketPage />} />
+        <Route path='/' element={<HomePage />} />
         {/* 404 */}
         {/* <Route path='*' element={<NotFound />} /> */}
       </Routes>

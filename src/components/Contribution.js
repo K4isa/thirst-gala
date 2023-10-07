@@ -16,6 +16,7 @@ export default function Contribution({ contribution, setContribution, setInfo })
     const [percentage, setPercentage] = useState(0);
     const [otherContributionError, setOtherContributionError] = useState('');
     const [donationModalVisible, setDonationModalVisible] = useState(false);
+    const [addLifePage, setAddLifePage] = useState(false);
 
     const inputRef = useRef(null);
 
@@ -41,16 +42,35 @@ export default function Contribution({ contribution, setContribution, setInfo })
     };
 
     const validateDonation = () => {
-        setContribution(prevContribution => ({...prevContribution, status: 'completed', lifes: tickets-contribution.tickets, total: total }));
+        if (total > 250) {
+            setTotal(25 * tickets);
+            setModalVisible(true);
+            inputRef.current.value = '';
+            return;
+        }
+        setContribution(prevContribution => ({...prevContribution, status: 'completed', total: total, futureDonation: false, futureDonationAmount: null}));
         setInfo(prevInfo => ({...prevInfo, status: 'current' }));
     }
 
     const validateFreeDonation = () => {
         if (amount < 250) setOtherContributionError('O valor mínimo para doação livre é de 250€')
         else { 
-            setContribution(prevContribution => ({...prevContribution, status: 'completed', total: amount}));
+            setContribution(prevContribution => ({...prevContribution, status: 'completed', total: amount, futureDonation: false, futureDonationAmount: null}));
             setInfo(prevInfo => ({...prevInfo, status: 'current' }));
         }
+    }
+
+    const validateDonationOnGala = (value) => {
+        setContribution(prevContribution => ({...prevContribution, status: 'completed', total: null, futureDonation: true, futureDonationAmount: value}));
+        setInfo(prevInfo => ({...prevInfo, status: 'current' }));
+    }
+
+    const backFromFreeDonation = () => {
+        if (addLifePage) {
+            setOtherContribution(0);
+        }
+        else setOtherContribution(2);
+        setAmount(0);
     }
 
     const setOtherContributionAmount = (value) => {
@@ -58,26 +78,17 @@ export default function Contribution({ contribution, setContribution, setInfo })
         if (value === '') setAmount(0);
         else {
             setAmount(value);
-            setPercentage(Math.round(amount / 12000 * 100));
+            setPercentage(Math.round(value / 12000 * 100));
         }
     }
 
     const prepareAmount = (value) => {
-        if (value === '') {
-            setTotal(25 * tickets);
-        } else if (25 * tickets + parseInt(value) <= 250) {
-            setTotal(25 * tickets + parseInt(value));
-        } else {
-            setTotal(25 * tickets);
-            setModalVisible(true);
-            inputRef.current.value = '';
-        }
+        if (value === '') setTotal(25 * tickets);
+        else setTotal(25 * tickets + parseInt(value));
     }
 
     const handleKeyPress = (event) => {
-        if (event.key === 'e') {
-          event.preventDefault();
-        }
+        if (event.key === 'e') event.preventDefault();
     };
 
     const generateTicketIcons = () => {
@@ -151,10 +162,7 @@ export default function Contribution({ contribution, setContribution, setInfo })
                                 )}
                             </Col>
                             <h3 className="block text-xs mb-5 leading-6 text-gray-900">
-                                MAS QUALQUER GOTA CONTA! SE NÃO PRETENDER ADICIONAR O PROPORCIONAL A UMA VIDA, SABIA QUE COM APENAS <strong>1€</strong>
-                            </h3>
-                            <h3 className="block text-xs mb-5 leading-6 text-gray-900">
-                                PODE DAR ÁGUA A DUAS PESSOAS DURANTE UM ANO?
+                                MAS QUALQUER GOTA CONTA! SE NÃO PRETENDER ADICIONAR O PROPORCIONAL A UMA VIDA, SABIA QUE COM APENAS <strong>1€</strong> PODE DAR ÁGUA A DUAS PESSOAS DURANTE UM ANO?
                             </h3>
                             <div className="relative mt-5 rounded-md shadow-sm">
                                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
@@ -192,7 +200,7 @@ export default function Contribution({ contribution, setContribution, setInfo })
                                         EUR€ {total}
                                     </p>
                                     <p className="mt-4 text-sm font-medium text-gray-900">
-                                        EQUIVALE A {tickets} VIDAS
+                                        EQUIVALE A {Math.round(total / 25)} VIDAS
                                     </p>
                                 </div>
                             </div>
@@ -239,7 +247,7 @@ export default function Contribution({ contribution, setContribution, setInfo })
                         <div className="mt-8 flex flex-col items-center justify-center">
                             <Button
                                 className="rounded-sm mt-8 bg-thirst-blue px-10 py-2 text-sm font-semibold text-white shadow-md hover:bg-white/10 hover:text-thirst-blue ring-2 ring-thirst-blue hover:ring-thirst-blue"
-                                onClick={() => { setOtherContribution(2); setAmount(0); }}    
+                                onClick={backFromFreeDonation}    
                             >
                                 VOLTAR
                             </Button>
@@ -289,7 +297,7 @@ export default function Contribution({ contribution, setContribution, setInfo })
                             </Button>
                             <Button
                                 className="rounded-sm mt-8 bg-white/10 px-10 py-2 text-sm font-semibold text-thirst-blue shadow-md hover:bg-thirst-blue hover:text-white ring-2 ring-thirst-blue hover:ring-thirst-blue"
-                                onClick={() => setOtherContribution(1)}    
+                                onClick={() => { setOtherContribution(1); setAddLifePage(false); }}    
                             >
                                 DOAR MAIS AGORA
                             </Button>
@@ -297,10 +305,10 @@ export default function Contribution({ contribution, setContribution, setInfo })
                 </Container>
             )}
             {modalVisible && (
-                <AlertModal setModalVisible={setModalVisible} setOtherContribution={setOtherContribution} />
+                <AlertModal setAddLifePage={setAddLifePage} setModalVisible={setModalVisible} setOtherContribution={setOtherContribution} />
             )}
             {donationModalVisible && (
-                <DonationModal setDonationModalVisible={setDonationModalVisible} setOtherContribution={setOtherContribution} />
+                <DonationModal setDonationModalVisible={setDonationModalVisible} setOtherContribution={setOtherContribution} validateDonationOnGala={validateDonationOnGala} />
             )}
         </>
     )

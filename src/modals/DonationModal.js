@@ -3,13 +3,36 @@ import { Dialog, Transition } from '@headlessui/react'
 import { Button } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBell } from '@fortawesome/free-solid-svg-icons'; // Import the specific solid icon you want to use
+import { ExclamationCircleIcon } from '@heroicons/react/20/solid'
 
-export default function DonationModal({setDonationModalVisible, setOtherContribution}) {
+export default function DonationModal({setDonationModalVisible, validateDonationOnGala}) {
     const [open, setOpen] = useState(true)
+    const [inputOpen, setInputOpen] = useState(false)
+    const [amount, setAmount] = useState(null)
+    const [amountError, setAmountError] = useState(false)
 
     const closeModal = () => {
         setOpen(false)
         setDonationModalVisible(false)
+    }
+
+    const handleKeyPress = (event) => {
+        if (event.key === 'e') event.preventDefault();
+    }
+
+    const onFutureDonationCheckout = () => {
+        if (amount === null || amount === '' || amount === 0) {
+            setAmountError(true)
+            return
+        }
+        setInputOpen(false)
+        closeModal()
+        validateDonationOnGala(amount)
+    }
+
+    const setFutureDonationTrue = () => {
+        closeModal()
+        validateDonationOnGala(null)
     }
 
     return (
@@ -55,23 +78,64 @@ export default function DonationModal({setDonationModalVisible, setOtherContribu
                                     </div>
                                 </div>
                                 <div className="mt-5 sm:mt-6">
-                                    <Button
-                                        className="inline-flex w-full mb-4 justify-center rounded-md bg-thirst-blue px-3 py-2 text-xs font-semibold text-white shadow-sm hover:bg-thirst-grey focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                                    >
-                                        JÁ SEI O MONTANTE QUE QUERO DOAR
-                                    </Button>
-                                    <Button
-                                        className="inline-flex w-full mb-4 justify-center rounded-md bg-thirst-blue px-3 py-2 text-xs font-semibold text-white shadow-sm hover:bg-thirst-grey focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                                    >
-                                        AINDA NÃO SEI O MONTANTE QUE QUERO DOAR
-                                    </Button>
+                                    {!inputOpen && (
+                                        <>
+                                            <Button
+                                                className="inline-flex w-full mb-4 justify-center rounded-md bg-thirst-blue px-3 py-2 text-xs font-semibold text-white shadow-sm hover:bg-thirst-grey focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                                                onClick={() => setInputOpen(true)}
+                                            >
+                                                JÁ SEI O MONTANTE QUE QUERO DOAR
+                                            </Button>
+                                            <Button
+                                                className="inline-flex w-full mb-4 justify-center rounded-md bg-thirst-blue px-3 py-2 text-xs font-semibold text-white shadow-sm hover:bg-thirst-grey focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                                                onClick={setFutureDonationTrue}
+                                            >
+                                                AINDA NÃO SEI O MONTANTE QUE QUERO DOAR
+                                            </Button>
+                                        </>
+                                    )}
+                                    {inputOpen && (
+                                        <>
+                                            <div className="relative mt-9 rounded-md shadow-sm">
+                                                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                                                    <span className="text-thirst-blue sm:text-sm font-medium">EUR€</span>
+                                                </div>
+                                                <input
+                                                    type="number"
+                                                    name="price"
+                                                    id="price"
+                                                    className="block w-full rounded-sm border-0 py-1.5 pl-14 pr-6 text-gray-900 ring-2 ring-inset ring-thirst-blue placeholder:text-thirst-blue focus:ring-2 focus:ring-inset focus:ring-thirst-blue sm:text-sm sm:leading-6"
+                                                    placeholder="Montante"
+                                                    min="0"
+                                                    onKeyPress={handleKeyPress}
+                                                    onChange={(e) => { setAmount(e.target.value); if (amountError) setAmountError(false); }}
+                                                />
+                                                {amountError && (
+                                                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+                                                        <ExclamationCircleIcon className="h-5 w-5 text-red-500" aria-hidden="true" />
+                                                    </div>
+                                                )}
+                                            </div>
+                                            {amountError && (
+                                                <p className="text-sm text-red-600" id="name-error">
+                                                    Insira um montante válido
+                                                </p>
+                                            )}
+                                            <Button
+                                                className="inline-flex w-full justify-center rounded-md mb-5 mt-5 bg-thirst-blue px-3 py-2 text-xs font-semibold text-white shadow-md hover:bg-thirst-grey focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                                                onClick={onFutureDonationCheckout}
+                                            >
+                                                CONTINUAR
+                                            </Button>
+                                        </>
+                                    )}
+                                </div>
                                     <Button
                                         className="inline-flex w-full justify-center rounded-md bg-thirst-blue px-3 py-2 text-xs font-semibold text-white shadow-sm hover:bg-thirst-grey focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                                         onClick={closeModal}
                                     >
                                         VOLTAR
                                     </Button>
-                                </div>
                             </Dialog.Panel>
                         </Transition.Child>
                     </div>
