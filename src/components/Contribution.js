@@ -290,7 +290,7 @@ export default function Contribution({ contribution, setContribution, setInfo })
                                 VOLTAR
                             </Button>
                             <Button
-                                className="rounded-sm mt-8 bg-thirst-blue px-10 py-2 text-sm font-semibold text-white shadow-md hover:bg-white/10 hover:text-thirst-blue ring-2 ring-thirst-blue hover:ring-thirst-blue"
+                                className="rounded-sm mt-8 bg-thirst-blue px-20 mx-10 py-2 text-sm font-semibold text-white shadow-md hover:bg-white/10 hover:text-thirst-blue ring-2 ring-thirst-blue hover:ring-thirst-blue"
                                 onClick={() => setDonationModalVisible(true)}    
                             >
                                 DOAR NA GALA
