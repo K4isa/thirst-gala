@@ -12,11 +12,9 @@ function App() {
   return (
     <Router>
       <Routes>
-        {/* public routes */}
-        {/* <Route path='/' element={<HomePage />} /> */}
+        <Route path='/' element={<HomePage />} />
         <Route path='/donation' element={<DonationPage />} />
         <Route path='/ticket' element={<TicketPage />} />
-        <Route path='/' element={<HomePage />} />
         {/* 404 */}
         {/* <Route path='*' element={<NotFound />} /> */}
       </Routes>
