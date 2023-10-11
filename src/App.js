@@ -6,6 +6,7 @@ import './style/App.css';
 import DonationPage from './pages/Donation';
 import TicketPage from './pages/Ticket';
 import HomePage from './pages/HomePage';
+import CountDown from './pages/CountDown';
 // import NotFound from './pages/error/NotFound';
 
 function App() {
@@ -13,6 +14,7 @@ function App() {
     <Router>
       <Routes>
         <Route path='/' element={<HomePage />} />
+        <Route path='/countDown' element={<CountDown />} />
         <Route path='/donation' element={<DonationPage />} />
         <Route path='/ticket' element={<TicketPage />} />
         {/* 404 */}

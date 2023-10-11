@@ -12,6 +12,7 @@ module.exports = {
         'thirst-blue': '#252a69',
         'thirst-grey': '#cacaca',
         'thirst-dark-grey': '#767171',
+        'thirst-darker-grey': '#50555c',
       },
       ringColor: {
         'thirst-blue': '#252a69',
