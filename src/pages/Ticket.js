@@ -3,7 +3,8 @@ import Ticket from '../components/Ticket';
 import Contribution from '../components/Contribution';
 import Info from '../components/Info';
 import Summary from '../components/Summary';
-import { Container } from 'react-bootstrap';
+import { Container, Image } from 'react-bootstrap';
+import logo from '../assets/gala_logo.png';
 
 export default function TicketPage() {
     const [ticket, setTicket] = useState({ name: '1. BILHETE', status: 'current' });
@@ -12,7 +13,10 @@ export default function TicketPage() {
     const [summary, setSummary] = useState({ name: '3. RESUMO', status: 'upcoming' });
 
     return (
-      <Container className="mt-4 mx-auto p-14">
+      <Container className="mx-auto px-14 py-7">
+        <div className="text-center mb-4"> {/* Center the image and the elements */}
+          <Image src={logo} alt="Thirst Gala" width={200} height={200} style={{ margin: "0 auto" }} /> {/* Use inline style to center the image */}
+        </div>
         <div className="flex flex-row md:space-x-32 md:space-y-0">
           {[ticket, contribution, info, summary].map((step) => (
             <div
