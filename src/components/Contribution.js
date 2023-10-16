@@ -7,7 +7,8 @@ import AlertModal from '../modals/AlertModal';
 import DonationModal from '../modals/DonationModal';
 
 export default function Contribution({ contribution, setContribution, setInfo }) {
-    const [tickets, setTickets] = useState(contribution.tickets);
+    const [tickets, setTickets] = useState(contribution.tickets*2);
+    
     const [maxTickets, setMaxTickets] = useState(false);
     const [amount, setAmount] = useState(0);
     const [total, setTotal] = useState(contribution.tickets * 50);
@@ -27,9 +28,10 @@ export default function Contribution({ contribution, setContribution, setInfo })
     }
 
     const handlePlusChange = () => {
+        console.log(tickets);
         if (tickets < 10) {
             const currentVal = inputRef.current.value === '' ? 0 : parseFloat(inputRef.current.value)
-            setTotal(currentVal + (tickets+1)*50);
+            setTotal(currentVal + (tickets+1)*25);
             setTickets(tickets + 1);
         }
         else setMaxTickets(true);
@@ -37,16 +39,16 @@ export default function Contribution({ contribution, setContribution, setInfo })
 
     const handleMinusChange = () => {
         setMaxTickets(false);
-        if (tickets > contribution.tickets) {
+        if (tickets > contribution.tickets*2) {
             const currentVal = inputRef.current.value === '' ? 0 : parseFloat(inputRef.current.value)
-            setTotal(currentVal + (tickets-1)*50);
+            setTotal(currentVal + (tickets-1)*25);
             setTickets(tickets - 1);
         }
     };
 
     const validateDonation = () => {
         if (total > 250) {
-            setTotal(50 * tickets);
+            setTotal(25 * (tickets-contribution.tickets*2) + contribution.tickets*50);
             setModalVisible(true);
             inputRef.current.value = '';
             return;
@@ -90,8 +92,8 @@ export default function Contribution({ contribution, setContribution, setInfo })
     }
 
     const prepareAmount = (value) => {
-        if (value === '') setTotal(50 * tickets);
-        else setTotal(50 * tickets + parseInt(value));
+        if (value === '') setTotal(25 * (tickets-contribution.tickets*2) + contribution.tickets*50);
+        else setTotal(25 * (tickets-contribution.tickets*2) + contribution.tickets*50 + parseInt(value));
     }
 
     const handleKeyPress = (event) => {
