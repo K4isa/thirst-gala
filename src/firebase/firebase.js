@@ -2,39 +2,39 @@ import { initializeApp } from 'firebase/app';
 import { getFirestore, collection, getDocs, addDoc } from 'firebase/firestore';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAvjIvX4K_Nzu6kJG4vVOXOkNEI7hZynfU",
-  authDomain: "gala-9cabb.firebaseapp.com",
-  projectId: "gala-9cabb",
-  storageBucket: "gala-9cabb.appspot.com",
-  messagingSenderId: "95473473677",
-  appId: "1:95473473677:web:1032cb6f0327651e366ac4",
-  measurementId: "G-6C41QK59CM"
+  apiKey: process.env.REACT_APP_API_KEY,
+  authDomain: process.env.REACT_APP_AUTH_DOMAIN,
+  projectId: process.env.REACT_APP_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_STORAGE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID,
+  appId: process.env.REACT_APP_APP_ID,
+  measurementId: process.env.REACT_APP_MEASUREMENT_ID
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-const fetchData = async () => {
-  try {
-    const querySnapshot = await getDocs(collection(db, 'ticketBuyer'));
+// const fetchData = async () => {
+//   try {
+//     const querySnapshot = await getDocs(collection(db, ''));
 
-    querySnapshot.forEach((doc) => {
-      console.log(`${doc.id} => ${JSON.stringify(doc.data())}`);
-    });
-  } catch (error) {
-    console.error('Error getting documents:', error);
-  }
-};
+//     querySnapshot.forEach((doc) => {
+//       console.log(`${doc.id} => ${JSON.stringify(doc.data())}`);
+//     });
+//   } catch (error) {
+//     console.error('Error getting documents:', error);
+//   }
+// };
 
 const addTicketBuyer = async (ticketBuyer) => {
     try {
-        const docRef = await addDoc(collection(db, 'ticketBuyer'), ticketBuyer);
-        console.log('Document written with ID: ', docRef.id);
+        await addDoc(collection(db, 'ticketBuyer'), ticketBuyer);
+        console.log('Document written');
+        return true
     } catch (error) {
-        console.error('Error adding document: ', error);
+      console.error('Error adding document: ', error);
+      return false
     }
 };
-
-fetchData();
 
 export { db, addTicketBuyer };

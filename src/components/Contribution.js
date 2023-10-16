@@ -28,7 +28,6 @@ export default function Contribution({ contribution, setContribution, setInfo })
     }
 
     const handlePlusChange = () => {
-        console.log(tickets);
         if (tickets < 10) {
             const currentVal = inputRef.current.value === '' ? 0 : parseFloat(inputRef.current.value)
             setTotal(currentVal + (tickets+1)*25);

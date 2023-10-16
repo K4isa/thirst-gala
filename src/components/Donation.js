@@ -43,7 +43,6 @@ export default function Donation({ setDonation, setPayment }) {
         const validEmail = emailRegex.test(email);
         setEmailError(!validEmail);
         if (isNif) {
-            console.log(nif);
             if (nif.nif.length !== 9 || !/^\d+$/.test(nif.nif)) {
                 setNifError(prevNif => ({...prevNif, nif: true }));
             }
@@ -60,7 +59,6 @@ export default function Donation({ setDonation, setPayment }) {
         if (isDedication && dedication.trim() === '') {
             setDedicationError(true);
         }
-        console.log(amount === 0);
         if (amount === 0 || amount === '' || amount ==='Outro') {
             setAmountError(true);
         }

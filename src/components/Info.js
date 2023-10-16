@@ -41,7 +41,7 @@ export default function Info({ setInfo, setSummary, contribution }) {
 
     const handleNameChange = (index, value) => {
         if (namesError) setNamesError(false);
-        const updatedNames = [...names];
+        let updatedNames = [...names];
         updatedNames[index] = value;
         setNames(updatedNames);
       };
@@ -68,7 +68,7 @@ export default function Info({ setInfo, setSummary, contribution }) {
         if (names.length !== contribution.tickets || names.some(name => name.trim() === '')) {
             setNamesError(true);
         }
-        if (!termsError && validEmail && !nifError.nif && !nifError.name && !nifError.address && !namesError) {
+        if (termsAccepted && validEmail && !nifError.nif && !nifError.name && !nifError.address && !namesError) {
             const info = {
                 names: names,
                 tickets: contribution.tickets,
@@ -79,9 +79,11 @@ export default function Info({ setInfo, setSummary, contribution }) {
                 termsAccepted: termsAccepted,
             }
 
-            addTicketBuyer(info);
-            setInfo(prevInfo => ({...prevInfo, status: 'completed' }));
-            setSummary(prevSummary => ({...prevSummary, status: 'current', info }));
+            const result = addTicketBuyer(info);
+            if (result) {
+                setInfo(prevInfo => ({...prevInfo, status: 'completed' }));
+                setSummary(prevSummary => ({...prevSummary, status: 'current', info }));
+            }
         }
     }
 
@@ -104,10 +106,6 @@ export default function Info({ setInfo, setSummary, contribution }) {
           event.preventDefault();
         }
     };
-
-    useEffect(() => {
-        console.log(contribution);
-    }, []);
 
     return (
         <Container className="flex mx-auto mt-5">

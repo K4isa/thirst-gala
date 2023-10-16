@@ -4,9 +4,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInstagram, faWhatsapp, faLinkedin, faTiktok, faSpotify } from '@fortawesome/free-brands-svg-icons';
 
 export default function Summary({ setSummary, summary }) {
-    useEffect(() => {
-        console.log(summary);
-    }, [])
 
     return (
         <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -27,14 +24,6 @@ export default function Summary({ setSummary, summary }) {
                     <a href="https://www.instagram.com/thirstproject_pt" target="_blank" rel="noopener noreferrer">
                         <FontAwesomeIcon
                             icon={faInstagram}
-                            style={{ color: '#252a69' }}
-                            size="4x"
-                            className='me-5 mb-5'
-                        />
-                    </a>
-                    <a href="https://www.instagram.com/your_instagram_username" target="_blank" rel="noopener noreferrer">
-                        <FontAwesomeIcon
-                            icon={faWhatsapp}
                             style={{ color: '#252a69' }}
                             size="4x"
                             className='me-5 mb-5'
