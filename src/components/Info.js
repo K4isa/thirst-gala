@@ -2,6 +2,8 @@ import { Container, Button } from 'react-bootstrap';
 import React, { useState, useEffect } from 'react';
 import { ExclamationCircleIcon } from '@heroicons/react/20/solid'
 import TermsModal from '../modals/TermsModal';
+import { db , addTicketBuyer} from '../firebase/firebase';
+import { collection, addDoc } from 'firebase/firestore';
 
 export default function Info({ setInfo, setSummary, contribution }) {
     const [emailError, setEmailError] = useState(false);
@@ -14,6 +16,8 @@ export default function Info({ setInfo, setSummary, contribution }) {
     const [namesError, setNamesError] = useState(false);
     const [futureContact, setFutureContact] = useState(false);
     const [termsVisible, setTermsVisible] = useState(false);
+    const [termsAccepted, setTermsAccepted] = useState(false);
+    const [termsError, setTermsError] = useState(false);
 
     const renderInputBoxes = () => {
         const inputBoxes = [];
@@ -43,6 +47,9 @@ export default function Info({ setInfo, setSummary, contribution }) {
       };
 
     const validateDonation = () => {
+        if (!termsAccepted) {
+            setTermsError(true);
+        }
         const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
         const validEmail = emailRegex.test(email);
         setEmailError(!validEmail);
@@ -61,16 +68,18 @@ export default function Info({ setInfo, setSummary, contribution }) {
         if (names.length !== contribution.tickets || names.some(name => name.trim() === '')) {
             setNamesError(true);
         }
-        if (validEmail && !nifError.nif && !nifError.name && !nifError.address && !namesError) {
+        if (!termsError && validEmail && !nifError.nif && !nifError.name && !nifError.address && !namesError) {
             const info = {
                 names: names,
                 tickets: contribution.tickets,
                 total: contribution.total,
                 nif: nif,
                 email: email,
-                futureContact: futureContact
+                futureContact: futureContact,
+                termsAccepted: termsAccepted,
             }
-            console.log(info);
+
+            addTicketBuyer(info);
             setInfo(prevInfo => ({...prevInfo, status: 'completed' }));
             setSummary(prevSummary => ({...prevSummary, status: 'current', info }));
         }
@@ -195,7 +204,7 @@ export default function Info({ setInfo, setSummary, contribution }) {
                     </h3>
                     <div className="w-full mt-1 ring-1 ring-thirst-gray"/>
                     <p className="text-2xl mt-5 font-bold text-black">
-                        EUR€ {contribution.total ? contribution.total : contribution.tickets * 25}
+                        EUR€ {contribution.total ? contribution.total : contribution.tickets * 50}
                     </p>
                 </div>
             </div>
@@ -296,12 +305,17 @@ export default function Info({ setInfo, setSummary, contribution }) {
                 
                 <div className="relative flex items-start">
                     <Button
-                        className="text-left ml-1 text-xxs leading-6 text-gray-900 hover:text-thirst-blue hover:font-bold"
+                        className={`text-left ml-1 text-xxs leading-6 ${termsAccepted ? 'text-thirst-blue font-bold' : 'text-gray-900'} hover:text-thirst-blue hover:font-bold`}
                         onClick={handleTermsChange}
                     >
                         ACEITO OS TERMOS E CONDIÇÕES DA GALA DO THIRST PROJECT PORTUGAL
                     </Button>
                 </div>
+                {termsError && (
+                    <p className="text-sm mb-2 text-red-600" id="address-error">
+                        Aceite os termos e condições
+                    </p>
+                )}
                 <div className="mt-5 flex flex-col items-center justify-center">
                     <Button
                         className="rounded-sm mt-6 bg-white/10 px-10 py-2 text-sm font-semibold text-thirst-blue shadow-md hover:bg-thirst-blue hover:text-white ring-2 ring-thirst-blue hover:ring-thirst-blue"
@@ -312,7 +326,7 @@ export default function Info({ setInfo, setSummary, contribution }) {
                 </div>
             </div>
             {termsVisible && (
-                <TermsModal setTermsVisible={setTermsVisible} />
+                <TermsModal setTermsVisible={setTermsVisible} setTermsAccepted={setTermsAccepted} setTermsError={setTermsError} />
             )}
         </Container>
     ) 

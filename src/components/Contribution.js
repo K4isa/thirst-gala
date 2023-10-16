@@ -10,7 +10,7 @@ export default function Contribution({ contribution, setContribution, setInfo })
     const [tickets, setTickets] = useState(contribution.tickets);
     const [maxTickets, setMaxTickets] = useState(false);
     const [amount, setAmount] = useState(0);
-    const [total, setTotal] = useState(contribution.tickets * 25);
+    const [total, setTotal] = useState(contribution.tickets * 50);
     const [modalVisible, setModalVisible] = useState(false);
     const [otherContribution, setOtherContribution] = useState(0);
     const [percentage, setPercentage] = useState(0);
@@ -23,11 +23,13 @@ export default function Contribution({ contribution, setContribution, setInfo })
     const changePageDisplay = () => {
         setOtherContribution(0);
         setAmount(0);
+        setPercentage(0);
     }
 
     const handlePlusChange = () => {
         if (tickets < 10) {
-            setTotal(inputRef.current.value + (tickets+1)*25);
+            const currentVal = inputRef.current.value === '' ? 0 : parseFloat(inputRef.current.value)
+            setTotal(currentVal + (tickets+1)*50);
             setTickets(tickets + 1);
         }
         else setMaxTickets(true);
@@ -36,14 +38,15 @@ export default function Contribution({ contribution, setContribution, setInfo })
     const handleMinusChange = () => {
         setMaxTickets(false);
         if (tickets > contribution.tickets) {
-            setTotal(inputRef.current.value + (tickets-1)*25);
+            const currentVal = inputRef.current.value === '' ? 0 : parseFloat(inputRef.current.value)
+            setTotal(currentVal + (tickets-1)*50);
             setTickets(tickets - 1);
         }
     };
 
     const validateDonation = () => {
         if (total > 250) {
-            setTotal(25 * tickets);
+            setTotal(50 * tickets);
             setModalVisible(true);
             inputRef.current.value = '';
             return;
@@ -71,11 +74,15 @@ export default function Contribution({ contribution, setContribution, setInfo })
         }
         else setOtherContribution(2);
         setAmount(0);
+        setPercentage(0);
     }
 
     const setOtherContributionAmount = (value) => {
         setOtherContributionError('');
-        if (value === '') setAmount(0);
+        if (value === '') {
+            setAmount(0);
+            setPercentage(0);
+        }
         else {
             setAmount(value);
             setPercentage(Math.round(value / 12000 * 100));
@@ -83,8 +90,8 @@ export default function Contribution({ contribution, setContribution, setInfo })
     }
 
     const prepareAmount = (value) => {
-        if (value === '') setTotal(25 * tickets);
-        else setTotal(25 * tickets + parseInt(value));
+        if (value === '') setTotal(50 * tickets);
+        else setTotal(50 * tickets + parseInt(value));
     }
 
     const handleKeyPress = (event) => {
@@ -97,7 +104,7 @@ export default function Contribution({ contribution, setContribution, setInfo })
         const rowIcons = [];
         for (let col = 0; col < 5; col++) {
             const index = row * 5 + col;
-            if (index < tickets) {
+            if (index < total/25) {
                 rowIcons.push(
                     <FontAwesomeIcon
                         key={index}
@@ -279,10 +286,15 @@ export default function Contribution({ contribution, setContribution, setInfo })
             {otherContribution === 2 && (
 
                 <Container className="mx-auto mt-5 flex flex-col items-center justify-center h-center px-10">
-                    <p className="mt-5 mb-5 text-center">
-                        sadfghjgnfbdvfghjgkh,hjmgnfbdvbgnhhg bfgnhfgdv bggfbfg bdfb fg bfg bfg bfg bgf bgf bgf 
+                    <p
+                        className="mt-5 text-center text-md font-bold text-thirst-dark-grey"
+                        style={{ width: '75%' }}
+                    >
+                        Durante o decorrer da gala, desenrolar-se-á um momento para a realização de doações por parte da plateia presente. Este momento será previamente identificado pelos apresentadores do evento, pelo que estará ao dispor de cada individualidade da plateia a realização de doações de um montante selecionado por cada uma.<br></br>
+                        Para que a sua doação seja correntemente realizada deve, no momento que considerar oportuno, levantar a sua mão, para que a doação seja válida. Caso prefira uma doação mais “silenciosa” e discreta, poderá usar a nossa plataforma de doações online, que será disponibilizada durante o dia da gala.<br></br>
+                        Para a realização do pagamento da respetiva doação, no final da gala, caso possível, será abordado por um membro do Thirst Project Portugal, para que este o auxilie no pagamento da doação ou ser-lhe-á enviado um email com o todas as instruções, para a realização do pagamento da mesma.
                     </p>
-                    <div className="flex mt-2 w-full justify-between px-10">
+                    <div className="flex mt-2 justify-between px-10">
                             <Button
                                 className="rounded-sm mt-8 bg-white/10 px-10 py-2 text-sm font-semibold text-thirst-blue shadow-md hover:bg-thirst-blue hover:text-white ring-2 ring-thirst-blue hover:ring-thirst-blue"
                                 onClick={changePageDisplay}    

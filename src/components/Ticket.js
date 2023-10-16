@@ -29,7 +29,7 @@ export default function Ticket({ setTicket, setContribution }) {
         const rowIcons = [];
         for (let col = 0; col < 5; col++) {
             const index = row * 5 + col;
-            if (index < tickets) {
+            if (index <  tickets * 2) {
                 rowIcons.push(
                     <FontAwesomeIcon
                         key={index}
@@ -92,7 +92,7 @@ export default function Ticket({ setTicket, setContribution }) {
                     )}
                 </Col>
                 <h3 className="block text-xs mb-3 leading-6 text-gray-900">
-                    CADA BILHETE TEM UM PREÇO MÍNIMO DE 25€,
+                    CADA BILHETE TEM UM PREÇO MÍNIMO DE 50€,
                 </h3>
                 <h3 className="block text-xs mb-5 leading-6 text-gray-900">
                     O EQUIVALENTE A DAR ÁGUA A UMA PESSOA PARA O RESTO DA SUA VIDA.
@@ -104,7 +104,7 @@ export default function Ticket({ setTicket, setContribution }) {
                 <div className="w-full mt-1 mb-5 ring-1 ring-thirst-gray"/>
 
                 <p className="text-2xl ml-2 font-bold">
-                    EUR€ {tickets * 25}
+                    EUR€ {tickets * 50}
                 </p>
             </div>
             <div className="flex-1 p-8">

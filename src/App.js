@@ -13,10 +13,10 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path='/' element={<HomePage />} />
-        <Route path='/countDown' element={<CountDown />} />
-        <Route path='/donation' element={<DonationPage />} />
-        <Route path='/ticket' element={<TicketPage />} />
+        <Route path='/doacoes' element={<HomePage />} />
+        <Route path='/bilhetes' element={<CountDown />} />
+        <Route path='/doacoes/doar' element={<DonationPage />} />
+        <Route path='/bilhetes/comprar' element={<TicketPage />} />
         {/* 404 */}
         {/* <Route path='*' element={<NotFound />} /> */}
       </Routes>

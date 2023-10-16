@@ -65,7 +65,7 @@ export default function AlertModal({setModalVisible, setAddLifePage, setOtherCon
                                         </div>
                                     </div>
                                 </div>
-                                <div className="mt-5 sm:mt-6">
+                                <div className="mt-5 sm:mt-6 flex flex-col justify-center">
                                     <Button
                                         className="inline-flex w-full mb-4 justify-center rounded-md bg-thirst-blue px-3 py-2 text-xs font-semibold text-white shadow-sm hover:bg-thirst-grey focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                                         onClick={setContributionPage}

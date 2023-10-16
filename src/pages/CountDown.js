@@ -67,8 +67,8 @@ export default function CountDown() {
                         </div>
                     </div>
                     <h3 className="text-thirst-darker-grey mt-10 text-sm font-bold">A MAIOR ORGANIZAÇÃO JOVEM DO MUNDO COM A MISSÃO DE ACABAR COM A CRISE MUNDIAL DE ÁGUA APRESENTA</h3>
-                    <h1 className="text-thirst-blue text-4xl font-bold mt-4">PRIEMIRA GALA THIRST PROJECT PORTUGAL</h1>
-                    <Link to="/ticket">
+                    <h1 className="text-thirst-blue text-4xl font-bold mt-4">PRIMEIRA GALA THIRST PROJECT PORTUGAL</h1>
+                    <Link to="/bilhetes/comprar">
                         <Button
                             className="rounded-sm justify-center mt-10 bg-thirst-blue px-20 py-2 text-sm font-semibold text-white shadow-md hover:bg-white/10 hover:text-thirst-blue ring-2 ring-thirst-blue hover:ring-thirst-blue"
                             style={{ width: '75%' }}

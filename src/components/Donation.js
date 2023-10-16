@@ -1,7 +1,6 @@
 import { Container, Button } from 'react-bootstrap';
 import React, { useState } from 'react';
 import { ExclamationCircleIcon } from '@heroicons/react/20/solid'
-import TermsModal from '../modals/TermsModal';
 
 export default function Donation({ setDonation, setPayment }) {
     const [emailError, setEmailError] = useState(false);
@@ -20,7 +19,6 @@ export default function Donation({ setDonation, setPayment }) {
     const [isNif, setIsNif] = useState(false);
     const [nifError, setNifError] = useState({nif: false, name: false, address: false});
     const [futureContact, setFutureContact] = useState(false);
-    const [termsVisible, setTermsVisible] = useState(false);
 
     const handleKeyPress = (event) => {
         if (event.key === 'e') {
@@ -79,10 +77,6 @@ export default function Donation({ setDonation, setPayment }) {
             setDonation(prevDonation => ({...prevDonation, status: 'completed' }));
             setPayment(prevPayment => ({...prevPayment, status: 'current', info }));
         }
-    }
-
-    const handleTermsChange = () => {
-        setTermsVisible(!termsVisible);
     }
 
     const handleDedicationsChange = () => {
@@ -395,14 +389,6 @@ export default function Donation({ setDonation, setPayment }) {
                     </>
                 )}
 
-                <div className="relative mt-4 flex items-start">
-                    <Button
-                        className="text-left ml-1 text-xxs leading-6 text-gray-900 hover:text-thirst-blue hover:font-bold"
-                        onClick={handleTermsChange}
-                    >
-                        ACEITO OS TERMOS E CONDIÇÕES DA GALA DO THIRST PROJECT PORTUGAL
-                    </Button>
-                </div>
                 <div className="w-full mt-3 ring-1 ring-thirst-blue"/>
 
                 <h3 className="block mt-5 text-xs font-bold leading-6 text-gray-900">
@@ -424,9 +410,6 @@ export default function Donation({ setDonation, setPayment }) {
                     </Button>
                 </div>
             </div>
-            {termsVisible && (
-                <TermsModal setTermsVisible={setTermsVisible} />
-            )}
         </Container>
     )
 }
