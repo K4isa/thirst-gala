@@ -1,9 +1,8 @@
 import { Container, Button } from 'react-bootstrap';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { ExclamationCircleIcon } from '@heroicons/react/20/solid'
 import TermsModal from '../modals/TermsModal';
-import { db , addTicketBuyer} from '../firebase/firebase';
-import { collection, addDoc } from 'firebase/firestore';
+import { addTicketBuyer} from '../firebase/firebase';
 
 export default function Info({ setInfo, setSummary, contribution }) {
     const [emailError, setEmailError] = useState(false);
@@ -72,11 +71,13 @@ export default function Info({ setInfo, setSummary, contribution }) {
             const info = {
                 names: names,
                 tickets: contribution.tickets,
-                total: contribution.total,
+                total: contribution.total ? contribution.total : contribution.tickets * 50,
                 nif: nif,
                 email: email,
                 futureContact: futureContact,
                 termsAccepted: termsAccepted,
+                futureDonation: contribution.futureDonation,
+                futureDonationAmount: contribution.futureDonationAmount,
             }
 
             const result = addTicketBuyer(info);

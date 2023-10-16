@@ -35,7 +35,7 @@ export default function Donation({ setDonation, setPayment }) {
     const prepareAmount = (amount) => {
         if (amountError) setAmountError(false);
         setAmount(parseFloat(amount));
-        setPercentage(Math.round(parseFloat(amount) / 12000 * 100));
+        amount ? setPercentage(Math.round(parseFloat(amount) / 12000 * 100)) : setPercentage(0);
     }
 
     const validateDonation = () => {
@@ -209,13 +209,13 @@ export default function Donation({ setDonation, setPayment }) {
                 </h3>
                 <div className="mt-5 flex justify-between">
                     <Button
-                        className="rounded-md shadow-md bg-thirst-blue px-6 py-2 text-sm font-semibold text-white shadow-md hover:bg-thirst-blue "
+                        className="rounded-md shadow-md me-2 bg-thirst-blue px-6 py-2 text-sm font-semibold text-white shadow-md hover:bg-thirst-blue "
                         onClick={() => prepareAmount(1000)}
                     >
                         €1 000
                     </Button>
                     <Button
-                        className="rounded-md shadow-md bg-thirst-blue px-6 py-2 text-sm font-semibold text-white shadow-md hover:bg-thirst-blue"
+                        className="rounded-md shadow-md me-2 bg-thirst-blue px-6 py-2 text-sm font-semibold text-white shadow-md hover:bg-thirst-blue"
                         onClick={() => prepareAmount(6000)}    
                     >
                         €6 000
@@ -395,7 +395,7 @@ export default function Donation({ setDonation, setPayment }) {
 
                 <div className="mt-5 flex flex-col items-center justify-center">
                     <p className="text-2xl font-bold text-thirst-blue">
-                        EUR€ {amount === 'Outro' ? 0 : amount}
+                        EUR€ {amount === 'Outro' || amount === '' || !amount ? 0 : amount}
                     </p>
                     <p className="mt-4 text-sm font-medium text-gray-900">
                         EQUIVALE A {percentage}% DE UM FURO

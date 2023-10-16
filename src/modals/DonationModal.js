@@ -72,7 +72,7 @@ export default function DonationModal({setDonationModalVisible, validateDonation
                                         </Dialog.Title>
                                         <div className="mt-2">
                                             <p className="text-sm font-bold text-thirst-dark-grey">
-                                                É A NOSSA PRIMEIRA GALA... CONSEGUE DAR-NOS UMA AJUDA E DIZER-NOS O QUE VAI NA SUA CABEÇA?!
+                                                É A NOSSA PRIMEIRA GALA... CONSEGUE DIZER-NOS O MONTANTE COM QUE PODERÁ CONTRIBUIR?
                                             </p>
                                         </div>
                                     </div>

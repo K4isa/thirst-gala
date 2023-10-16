@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Container } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faInstagram, faWhatsapp, faLinkedin, faTiktok, faSpotify } from '@fortawesome/free-brands-svg-icons';
+import { faInstagram, faLinkedin, faTiktok, faSpotify } from '@fortawesome/free-brands-svg-icons';
 
 export default function Summary({ setSummary, summary }) {
 
@@ -18,7 +18,7 @@ export default function Summary({ setSummary, summary }) {
                     Obrigado por acreditar na nossa missão!
                 </h3>
                 <h3 className="block text-xl mt-10 text-thirst-blue">
-                    Os bilhetes foram enviados para o seu e-mail.
+                    Em breve irá receber os bilhetes no seu e-mail.
                 </h3>
                 <div className="mt-10">
                     <a href="https://www.instagram.com/thirstproject_pt" target="_blank" rel="noopener noreferrer">

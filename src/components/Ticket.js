@@ -92,14 +92,14 @@ export default function Ticket({ setTicket, setContribution }) {
                     )}
                 </Col>
                 <h3 className="block text-xs mb-3 leading-6 text-gray-900">
-                    CADA BILHETE TEM UM PREÇO MÍNIMO DE 50€,
+                    CADA BILHETE TEM UM PREÇO MÍNIMO DE 25€,
                 </h3>
                 <h3 className="block text-xs mb-5 leading-6 text-gray-900">
                     O EQUIVALENTE A DAR ÁGUA A UMA PESSOA PARA O RESTO DA SUA VIDA.
                 </h3>
 
                 <h3 className="block text-xs font-bold leading-6 text-gray-900">
-                    VALOR MÍNIMO A PAGAR
+                    VALOR A PAGAR
                 </h3>
                 <div className="w-full mt-1 mb-5 ring-1 ring-thirst-gray"/>
 

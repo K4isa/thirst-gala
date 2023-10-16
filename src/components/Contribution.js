@@ -38,7 +38,7 @@ export default function Contribution({ contribution, setContribution, setInfo })
 
     const handleMinusChange = () => {
         setMaxTickets(false);
-        if (tickets > contribution.tickets*2) {
+        if (tickets > contribution.tickets) {
             const currentVal = inputRef.current.value === '' ? 0 : parseFloat(inputRef.current.value)
             setTotal(currentVal + (tickets-1)*25);
             setTickets(tickets - 1);
@@ -65,7 +65,7 @@ export default function Contribution({ contribution, setContribution, setInfo })
     }
 
     const validateDonationOnGala = (value) => {
-        setContribution(prevContribution => ({...prevContribution, status: 'completed', total: null, futureDonation: true, futureDonationAmount: value}));
+        setContribution(prevContribution => ({...prevContribution, status: 'completed', total: amount, futureDonation: true, futureDonationAmount: value}));
         setInfo(prevInfo => ({...prevInfo, status: 'current' }));
     }
 
