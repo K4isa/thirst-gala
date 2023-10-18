@@ -1,8 +1,12 @@
-import { Container, Button } from 'react-bootstrap';
+import { Container, Button, Image } from 'react-bootstrap';
 import React, { useState } from 'react';
 import { ExclamationCircleIcon } from '@heroicons/react/20/solid'
 import TermsModal from '../modals/TermsModal';
-import { addTicketBuyer} from '../firebase/firebase';
+import { addTicketBuyer, updateRefCreated, getTicketById } from '../firebase/firebase';
+import mbway from '../assets/mbway.png';
+import multibanco from '../assets/multibanco.png';
+import axios from 'axios';
+import MultibancoModel from '../modals/MultibancoModel';
 
 export default function Info({ setInfo, setSummary, contribution }) {
     const [emailError, setEmailError] = useState(false);
@@ -17,6 +21,80 @@ export default function Info({ setInfo, setSummary, contribution }) {
     const [termsVisible, setTermsVisible] = useState(false);
     const [termsAccepted, setTermsAccepted] = useState(false);
     const [termsError, setTermsError] = useState(false);
+    const [paymentType, setPaymentType] = useState('none');
+    const [phone, setPhone] = useState('');
+    const [phoneError, setPhoneError] = useState(false);
+    const [mbInfo, setMBInfo] = useState(null);
+    const [blockButton, setBlockButton] = useState(false);
+
+    const mbwayPayment = () => {
+        const value = contribution.total ? contribution.total : contribution.tickets * 50;
+        const options = {
+            method: 'POST',
+            url: 'https://mbwayrequest-tkyq4vwo6q-uc.a.run.app',
+            headers: {accept: 'application/json', 'content-type': 'application/json'},
+            data: {
+              total: value,
+              phone: phone,
+              email: email,
+            }
+          };
+
+        console.log(process.env.REACT_APP_API_EUPAGO);
+        const api = axios.create({
+            baseURL: 'https://clientes.eupago.pt', // Set your API's base URL here
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+        });
+        axios.post('https://mbwayrequest-tkyq4vwo6q-uc.a.run.app', {
+            total: value,
+            phone: phone,
+            email: email,
+        })
+        .then(function (response) {
+            console.log(response.data);
+            return true;
+        })
+        .catch(function (error) {
+            console.error(error);
+            return false;
+        });
+    }
+
+    const multibancoPayment = () => {
+        const today = new Date();
+        const tomorrow = new Date(today.getTime() + (24 * 60 * 60 * 1000));
+
+        let dataFimStr = tomorrow.toISOString().split("T")[0];
+        if (dataFimStr === '2023-11-11') {
+            dataFimStr = '2023-11-10';
+        }
+
+        const value = contribution.total ? contribution.total : contribution.tickets * 50;
+        const options = {
+            method: 'POST',
+            headers: {accept: 'application/json', 'content-type': 'application/json'},
+            body: JSON.stringify({
+              chave: process.env.REACT_APP_API_EUPAGO,
+              valor: value,
+              per_dup: 0,
+              data_fim: dataFimStr,
+              failOver: '1',
+              email: email
+            }),
+            mode: 'no-cors'
+        };
+          
+        fetch('https://clientes.eupago.pt/clientes/rest_api/multibanco/create', options)
+            .then(response => response.json())
+            .then(response => {
+                setMBInfo(response);
+                console.log(response);
+            })
+            .catch(err => console.error(err));
+    }
 
     const renderInputBoxes = () => {
         const inputBoxes = [];
@@ -45,46 +123,68 @@ export default function Info({ setInfo, setSummary, contribution }) {
         setNames(updatedNames);
       };
 
-    const validateDonation = () => {
+    const validateDonation = async () => {
+        setBlockButton(true);
         if (!termsAccepted) {
             setTermsError(true);
+            setBlockButton(false);
         }
         const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
         const validEmail = emailRegex.test(email);
         setEmailError(!validEmail);
+        if (!validEmail) setBlockButton(false);
+        if (paymentType === 'mbway') {
+            if (phone.length !== 9 || !/^\d+$/.test(phone)) {
+                setPhoneError(true);
+                setBlockButton(false);
+            }
+        }
         if (isNif) {
             if (nif.nif.length !== 9 || !/^\d+$/.test(nif.nif)) {
                 setNifError(prevNif => ({...prevNif, nif: true }));
+                setBlockButton(false);
             }
             if (nif.name.trim() === '') {
                 setNifError(prevName => ({...prevName, name: true }));
+                setBlockButton(false);
             }
             if (nif.address.trim() === '') {
                 setNifError(prevAddress => ({...prevAddress, address: true }));
+                setBlockButton(false);
             }
         }
 
         if (names.length !== contribution.tickets || names.some(name => name.trim() === '')) {
             setNamesError(true);
+            setBlockButton(false);
         }
-        if (termsAccepted && validEmail && !nifError.nif && !nifError.name && !nifError.address && !namesError) {
+        if (!phoneError && termsAccepted && validEmail && !nifError.nif && !nifError.name && !nifError.address && !namesError) {
             const info = {
                 names: names,
                 tickets: contribution.tickets,
                 total: contribution.total ? contribution.total : contribution.tickets * 50,
                 nif: nif,
                 email: email,
+                phone: phone,
                 futureContact: futureContact,
                 termsAccepted: termsAccepted,
                 futureDonation: contribution.futureDonation,
                 futureDonationAmount: contribution.futureDonationAmount,
+                paid: false,
+                referenceCreated: false,
             }
 
-            const result = addTicketBuyer(info);
-            if (result) {
-                setInfo(prevInfo => ({...prevInfo, status: 'completed' }));
-                setSummary(prevSummary => ({...prevSummary, status: 'current', info }));
-            }
+            const result = await addTicketBuyer(info);
+            setTimeout(async() => {
+                if (result !== false) {
+                    const ticketUpdated = await getTicketById(result);
+                    if (ticketUpdated !== null && ticketUpdated.referenceCreated) {
+                        setInfo(prevInfo => ({...prevInfo, status: 'completed' }));
+                        setSummary(prevSummary => ({...prevSummary, status: 'current', info }));
+                        setBlockButton(false);
+                    }
+                }
+            }, 10000);
         }
     }
 
@@ -212,6 +312,50 @@ export default function Info({ setInfo, setSummary, contribution }) {
                     PAGAMENTO
                 </h3>
                 <div className="w-full mt-1 ring-1 ring-thirst-gray"/>
+                <div className="mx-auto mt-5 mb-5 flex items-center justify-center rounded-full">
+                    <Button
+                        className={`flex items-center ${paymentType === 'multibanco' ? 'bg-thirst-blue' : 'bg-white/10'} me-3 rounded-lg p-1`}
+                        onClick={() => setPaymentType('multibanco')}
+                    >
+                        <Image src={multibanco} alt="multibanco" width={40} height={40} />
+                    </Button>
+                    <Button
+                        className={`flex items-center ${paymentType === 'mbway' ? 'bg-thirst-blue' : 'bg-white/10'} me-3 rounded-lg p-1`}
+                        onClick={() => setPaymentType('mbway')}
+                        >
+                        <Image src={mbway} alt="mbway" width={40} height={40} />
+                    </Button>
+                </div>
+                {paymentType === 'multibanco' && (
+                    <MultibancoModel setPaymentType={setPaymentType} mbInfo={mbInfo} />
+                )}
+                {paymentType === 'mbway' && (
+                    <>
+                        <div className="relative rounded-md shadow-sm">
+                            <input
+                                type="number"
+                                name="phone"
+                                id="dedication"
+                                className="block w-full mt-4 rounded-sm border-0 py-1.5 pr-10 text-black-900 ring-2 ring-inset ring-thirst-blue placeholder:text-thirst-blue focus:ring-2 focus:ring-inset focus:ring-thirst-blue sm:text-sm sm:leading-6"
+                                placeholder="Número de telefone"
+                                aria-describedby="phone"
+                                value={phone}
+                                onKeyPress={handleKeyPress}
+                                onChange={(e) => { setPhone(e.target.value); if (phoneError) setPhoneError(false); }}
+                            />
+                            {phoneError && (
+                                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+                                        <ExclamationCircleIcon className="h-5 w-5 text-red-500" aria-hidden="true" />
+                                    </div>
+                                )}
+                        </div>
+                        {phoneError && (
+                            <p className="text-sm mb-2 text-red-600" id="name-error">
+                                Número inválido
+                            </p>
+                        )}
+                    </>
+                )}
                 <div className="relative flex items-start">
                     <div className="flex h-6 items-center">
                         <input
@@ -317,10 +461,15 @@ export default function Info({ setInfo, setSummary, contribution }) {
                 )}
                 <div className="mt-5 flex flex-col items-center justify-center">
                     <Button
-                        className="rounded-sm mt-6 bg-white/10 px-10 py-2 text-sm font-semibold text-thirst-blue shadow-md hover:bg-thirst-blue hover:text-white ring-2 ring-thirst-blue hover:ring-thirst-blue"
-                        onClick={validateDonation}    
+                        className={`rounded-sm mt-6 bg-white/10 px-10 py-2 text-sm font-semibold text-thirst-blue shadow-md ring-2 ring-thirst-blue ${!blockButton ? 'hover:bg-thirst-blue hover:text-white hover:ring-thirst-blue' : ''}`}
+                        onClick={validateDonation}
+                        disabled={blockButton}
                     >
-                        CONTINUAR
+                        {blockButton ? (
+                            <div className="loader"></div>
+                        ) : (
+                            'CONTINUAR'
+                        )}
                     </Button>
                 </div>
             </div>

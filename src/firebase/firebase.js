@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { getFirestore, collection, getDocs, addDoc } from 'firebase/firestore';
+import { getFirestore, collection, getDoc, getDocs, addDoc, updateDoc, doc } from 'firebase/firestore';
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_API_KEY,
@@ -27,14 +27,52 @@ const db = getFirestore(app);
 // };
 
 const addTicketBuyer = async (ticketBuyer) => {
-    try {
-        await addDoc(collection(db, 'ticketBuyer'), ticketBuyer);
-        console.log('Document written');
-        return true
-    } catch (error) {
-      console.error('Error adding document: ', error);
-      return false
-    }
+  try {
+    const docRef = await addDoc(collection(db, 'ticketBuyer'), ticketBuyer);
+    const docId = docRef.id;
+    console.log('Document written');
+    return docId;
+  } catch (error) {
+    console.error('Error adding document: ', error);
+    return false
+  }
 };
 
-export { db, addTicketBuyer };
+const getTicketById = async (ticketId) => {
+  try {
+    console.log(ticketId);
+
+    const docRef = doc(db, 'ticketBuyer', ticketId);
+    console.log(docRef);
+
+    const ticket = await getDoc(docRef);
+    console.log(ticket);
+
+    if (!ticket.exists()) {
+      console.log('Ticket not found');
+      return null;
+    }
+
+    const ticketBuyer = ticket.data();
+    console.log(ticketBuyer);
+
+    return ticketBuyer;
+  } catch (error) {
+    console.error('Error getting ticket: ', error, ticketId);
+    return null;
+  }
+};
+
+const updateRefCreated = async (docId) => {
+  try {
+    const ticketBuyerRef = doc(db, 'ticketBuyer', docId);
+    console.log('ticketBuyerRef', ticketBuyerRef);
+    await updateDoc(ticketBuyerRef, { referenceCreated: true });
+    return true;
+  } catch (error) {
+    console.error('Error updating document: ', error);
+    return false
+  }
+};
+
+export { db, addTicketBuyer, updateRefCreated, getTicketById };
