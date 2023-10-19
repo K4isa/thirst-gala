@@ -48,8 +48,11 @@ const checkHowManyTicketsSold = async () => {
     querySnapshot.forEach((doc) => {
       const data = doc.data();
       const ticketsSold = data.tickets || 0;
+      const paid = data.paid || false;
 
-      totalTicketsSold += ticketsSold;
+      if (paid) {
+        totalTicketsSold += ticketsSold;
+      }
     });
 
     return totalTicketsSold;
