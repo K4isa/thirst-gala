@@ -3,41 +3,42 @@ import { Dialog, Transition } from '@headlessui/react'
 import { Button, Image } from 'react-bootstrap'
 import logo from '../assets/gala_logo.png';
 
-export default function MultibancoModel({setModalVisible, info }) {
+export default function MultibancoModel({setMBModalVisible, mbInfo, changeFromMultibanco }) {
     const [open, setOpen] = useState(true)
-
+    const today = new Date();
+    const tomorrow = new Date(today.getTime() + 24 * 60 * 60 * 1000);
+    const day = String(tomorrow.getDate()).padStart(2, '0');
+    const month = String(tomorrow.getMonth() + 1).padStart(2, '0');
+    const year = tomorrow.getFullYear();
+  
+    const finalDate = `${day}/${month}/${year}`;
+  
     const closeModal = () => {
-        // setOpen(false)
-        // setModalVisible(false)
+        setOpen(false)
+        setMBModalVisible(false)
     }
 
-    // const setContributionPage = () => {
-    //     setOtherContribution(1)
-    //     setAddLifePage(true)
-    //     closeModal()
-    // }
-
-    // const setInfoPage = () => {
-    //     setOtherContribution(2)
-    //     closeModal()
-    // }
+    const changePage = () => {
+        changeFromMultibanco()
+        closeModal()
+    }
 
     const paymentInfo = [
         {
           name: 'Entidade',
-          role: info.entidade,
+          role: mbInfo.entidade,
         },
         {
           name: 'Referência',
-          role: info.referencia,
+          role: mbInfo.referencia,
         },
         {
           name: 'Valor',
-          role: info.valor,
+          role: `${mbInfo.valor}€`,
         },
         {
           name: 'Prazo de Pagamento',
-          role: info.data_fim,
+          role: finalDate,
         }
     ]
 
@@ -102,7 +103,7 @@ export default function MultibancoModel({setModalVisible, info }) {
                                     </ul>
                                     <Button
                                         className="inline-flex w-full justify-center rounded-md bg-thirst-blue px-3 py-2 text-xs font-semibold text-white shadow-sm hover:bg-thirst-grey focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                                        onClick={closeModal}
+                                        onClick={changePage}
                                     >
                                         FECHAR
                                     </Button>

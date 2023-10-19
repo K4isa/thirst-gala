@@ -26,75 +26,13 @@ export default function Info({ setInfo, setSummary, contribution }) {
     const [phoneError, setPhoneError] = useState(false);
     const [mbInfo, setMBInfo] = useState(null);
     const [blockButton, setBlockButton] = useState(false);
+    const [internalError, setInternalError] = useState(false);
+    const [mbModalVisible, setMBModalVisible] = useState(false);
 
-    const mbwayPayment = () => {
-        const value = contribution.total ? contribution.total : contribution.tickets * 50;
-        const options = {
-            method: 'POST',
-            url: 'https://mbwayrequest-tkyq4vwo6q-uc.a.run.app',
-            headers: {accept: 'application/json', 'content-type': 'application/json'},
-            data: {
-              total: value,
-              phone: phone,
-              email: email,
-            }
-          };
-
-        console.log(process.env.REACT_APP_API_EUPAGO);
-        const api = axios.create({
-            baseURL: 'https://clientes.eupago.pt', // Set your API's base URL here
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            },
-        });
-        axios.post('https://mbwayrequest-tkyq4vwo6q-uc.a.run.app', {
-            total: value,
-            phone: phone,
-            email: email,
-        })
-        .then(function (response) {
-            console.log(response.data);
-            return true;
-        })
-        .catch(function (error) {
-            console.error(error);
-            return false;
-        });
-    }
-
-    const multibancoPayment = () => {
-        const today = new Date();
-        const tomorrow = new Date(today.getTime() + (24 * 60 * 60 * 1000));
-
-        let dataFimStr = tomorrow.toISOString().split("T")[0];
-        if (dataFimStr === '2023-11-11') {
-            dataFimStr = '2023-11-10';
-        }
-
-        const value = contribution.total ? contribution.total : contribution.tickets * 50;
-        const options = {
-            method: 'POST',
-            headers: {accept: 'application/json', 'content-type': 'application/json'},
-            body: JSON.stringify({
-              chave: process.env.REACT_APP_API_EUPAGO,
-              valor: value,
-              per_dup: 0,
-              data_fim: dataFimStr,
-              failOver: '1',
-              email: email
-            }),
-            mode: 'no-cors'
-        };
-          
-        fetch('https://clientes.eupago.pt/clientes/rest_api/multibanco/create', options)
-            .then(response => response.json())
-            .then(response => {
-                setMBInfo(response);
-                console.log(response);
-            })
-            .catch(err => console.error(err));
-    }
+    const changeFromMultibanco = () => {
+        setInfo(prevInfo => ({...prevInfo, status: 'completed' }));
+        setSummary(prevSummary => ({...prevSummary, status: 'current' }));
+    };
 
     const renderInputBoxes = () => {
         const inputBoxes = [];
@@ -125,6 +63,7 @@ export default function Info({ setInfo, setSummary, contribution }) {
 
     const validateDonation = async () => {
         setBlockButton(true);
+        setInternalError(false);
         if (!termsAccepted) {
             setTermsError(true);
             setBlockButton(false);
@@ -172,19 +111,72 @@ export default function Info({ setInfo, setSummary, contribution }) {
                 futureDonationAmount: contribution.futureDonationAmount,
                 paid: false,
                 referenceCreated: false,
+                error: false,
+                type: paymentType,
+                referencia: null,
+                entidade: null,
             }
 
             const result = await addTicketBuyer(info);
-            setTimeout(async() => {
-                if (result !== false) {
-                    const ticketUpdated = await getTicketById(result);
-                    if (ticketUpdated !== null && ticketUpdated.referenceCreated) {
-                        setInfo(prevInfo => ({...prevInfo, status: 'completed' }));
-                        setSummary(prevSummary => ({...prevSummary, status: 'current', info }));
-                        setBlockButton(false);
+            if (paymentType === 'mbway') {
+                setTimeout(async() => {
+                    if (result !== false) {
+                        let ticketUpdated = await getTicketById(result);
+                        console.log(ticketUpdated);
+                        if (ticketUpdated !== null && ticketUpdated.referenceCreated) {
+                            setInfo(prevInfo => ({...prevInfo, status: 'completed' }));
+                            setSummary(prevSummary => ({...prevSummary, status: 'current' }));
+                            setBlockButton(false);
+                            return;
+                        } else {
+                            console.log("try again")
+                            setTimeout(async() => {
+                                ticketUpdated = await getTicketById(result);
+                                if (ticketUpdated !== null && ticketUpdated.referenceCreated) {
+                                    setInfo(prevInfo => ({...prevInfo, status: 'completed' }));
+                                    setSummary(prevSummary => ({...prevSummary, status: 'current' }));
+                                    setBlockButton(false);
+                                    return;
+                                } 
+                            }, 7000)
+                        }
                     }
-                }
-            }, 10000);
+                }, 7000);
+            } else if (paymentType === 'multibanco') {
+                setTimeout(async() => {
+                    if (result !== false) {
+                        let ticketUpdated = await getTicketById(result);
+                        console.log(ticketUpdated);
+                        if (ticketUpdated !== null && ticketUpdated.referenceCreated) {
+                            setBlockButton(false);
+                            setMBInfo({
+                                entidade: ticketUpdated.entidade,
+                                referencia: ticketUpdated.referencia,
+                                valor: ticketUpdated.total,
+                            })
+                            setMBModalVisible(true);
+                            return;
+                        } else {
+                            setTimeout(async() => {
+                                ticketUpdated = await getTicketById(result);
+                                console.log(ticketUpdated);
+                                if (ticketUpdated !== null && ticketUpdated.referenceCreated) {
+                                    setBlockButton(false);
+                                    setMBInfo({
+                                        entidade: ticketUpdated.entidade,
+                                        referencia: ticketUpdated.referencia,
+                                        valor: ticketUpdated.total,
+                                    })
+                                    setMBModalVisible(true);
+                                    return;
+                                } 
+                            }, 5000)
+                        }
+                    }
+                }, 10000);
+            }
+            setInternalError(true);
+            setBlockButton(false);
         }
     }
 
@@ -326,8 +318,8 @@ export default function Info({ setInfo, setSummary, contribution }) {
                         <Image src={mbway} alt="mbway" width={40} height={40} />
                     </Button>
                 </div>
-                {paymentType === 'multibanco' && (
-                    <MultibancoModel setPaymentType={setPaymentType} mbInfo={mbInfo} />
+                {mbModalVisible && (
+                    <MultibancoModel setMBModalVisible={setMBModalVisible} mbInfo={mbInfo} changeFromMultibanco={changeFromMultibanco} />
                 )}
                 {paymentType === 'mbway' && (
                     <>
@@ -337,7 +329,7 @@ export default function Info({ setInfo, setSummary, contribution }) {
                                 name="phone"
                                 id="dedication"
                                 className="block w-full mt-4 rounded-sm border-0 py-1.5 pr-10 text-black-900 ring-2 ring-inset ring-thirst-blue placeholder:text-thirst-blue focus:ring-2 focus:ring-inset focus:ring-thirst-blue sm:text-sm sm:leading-6"
-                                placeholder="Número de telefone"
+                                placeholder="Número de telefone (sem indicativo)"
                                 aria-describedby="phone"
                                 value={phone}
                                 onKeyPress={handleKeyPress}
@@ -351,7 +343,7 @@ export default function Info({ setInfo, setSummary, contribution }) {
                         </div>
                         {phoneError && (
                             <p className="text-sm mb-2 text-red-600" id="name-error">
-                                Número inválido
+                                Número inválido (caso tenha introduzido indicativo, retire-o)
                             </p>
                         )}
                     </>
@@ -471,6 +463,11 @@ export default function Info({ setInfo, setSummary, contribution }) {
                             'CONTINUAR'
                         )}
                     </Button>
+                    {internalError && (
+                        <p className="text-sm mt-2 text-center text-red-600" id="address-error">
+                            Ocorreu um erro interno. Por favor, tente novamente. Se o erro persistir por favor contacte-nos através do email gala@thirstproject.pt
+                        </p>
+                    )}
                 </div>
             </div>
             {termsVisible && (
