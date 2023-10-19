@@ -14,23 +14,10 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// const fetchData = async () => {
-//   try {
-//     const querySnapshot = await getDocs(collection(db, ''));
-
-//     querySnapshot.forEach((doc) => {
-//       console.log(`${doc.id} => ${JSON.stringify(doc.data())}`);
-//     });
-//   } catch (error) {
-//     console.error('Error getting documents:', error);
-//   }
-// };
-
 const addTicketBuyer = async (ticketBuyer) => {
   try {
     const docRef = await addDoc(collection(db, 'ticketBuyer'), ticketBuyer);
     const docId = docRef.id;
-    console.log('Document written');
     return docId;
   } catch (error) {
     console.error('Error adding document: ', error);
@@ -40,22 +27,12 @@ const addTicketBuyer = async (ticketBuyer) => {
 
 const getTicketById = async (ticketId) => {
   try {
-    console.log(ticketId);
-
     const docRef = doc(db, 'ticketBuyer', ticketId);
-    console.log(docRef);
-
     const ticket = await getDoc(docRef);
-    console.log(ticket);
-
     if (!ticket.exists()) {
-      console.log('Ticket not found');
       return null;
     }
-
     const ticketBuyer = ticket.data();
-    console.log(ticketBuyer);
-
     return ticketBuyer;
   } catch (error) {
     console.error('Error getting ticket: ', error, ticketId);
@@ -63,16 +40,23 @@ const getTicketById = async (ticketId) => {
   }
 };
 
-const updateRefCreated = async (docId) => {
+const checkHowManyTicketsSold = async () => {
   try {
-    const ticketBuyerRef = doc(db, 'ticketBuyer', docId);
-    console.log('ticketBuyerRef', ticketBuyerRef);
-    await updateDoc(ticketBuyerRef, { referenceCreated: true });
-    return true;
+    const querySnapshot = await getDocs(collection(db, 'ticketBuyer'));
+    let totalTicketsSold = 0;
+
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      const ticketsSold = data.tickets || 0;
+
+      totalTicketsSold += ticketsSold;
+    });
+
+    return totalTicketsSold;
   } catch (error) {
-    console.error('Error updating document: ', error);
-    return false
+    console.error('Error checking tickets sold:', error);
+    throw error;
   }
 };
 
-export { db, addTicketBuyer, updateRefCreated, getTicketById };
+export { db, addTicketBuyer, getTicketById, checkHowManyTicketsSold };

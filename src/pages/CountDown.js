@@ -3,7 +3,7 @@ import { Container, Image, Button } from 'react-bootstrap';
 import logo from '../assets/gala_logo.png';
 import { Link } from 'react-router-dom';
 
-export default function CountDown() {
+export default function CountDown({unavailable}) {
 
     const [days, setDays] = useState('00');
     const [hours, setHours] = useState('00');
@@ -71,15 +71,24 @@ export default function CountDown() {
                     <h3 className="block mt-4 text-lg font-bold text-thirst-blue">
                         11 de novembro | 20:00
                     </h3>
-                    <Link to="/bilhetes/comprar">
+                    {unavailable ? (
+                        <Link to="/bilhetes/comprar">
+                            <Button
+                                className="rounded-sm justify-center mt-5 bg-thirst-blue px-20 py-2 text-sm font-semibold text-white shadow-md hover:bg-white/10 hover:text-thirst-blue ring-2 ring-thirst-blue hover:ring-thirst-blue"
+                                style={{ width: '75%' }}
+                            >
+                                RESERVAR O MEU LUGAR!
+                            </Button>
+                        </Link>
+                    ) : (
                         <Button
-                            className="rounded-sm justify-center mt-5 bg-thirst-blue px-20 py-2 text-sm font-semibold text-white shadow-md hover:bg-white/10 hover:text-thirst-blue ring-2 ring-thirst-blue hover:ring-thirst-blue"
+                            className="rounded-sm justify-center mt-5 bg-thirst-blue px-20 py-2 text-sm font-semibold text-white shadow-md ring-2 ring-thirst-blue"
                             style={{ width: '75%' }}
+                            disabled
                         >
-                            RESERVAR O MEU LUGAR!
+                            BILHETES ESGOTADOS
                         </Button>
-                    </Link>
-
+                    )}
                 </div>
                 <div
                     className="text-center mt-14 mb-4"

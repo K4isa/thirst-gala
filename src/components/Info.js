@@ -2,10 +2,9 @@ import { Container, Button, Image } from 'react-bootstrap';
 import React, { useState } from 'react';
 import { ExclamationCircleIcon } from '@heroicons/react/20/solid'
 import TermsModal from '../modals/TermsModal';
-import { addTicketBuyer, updateRefCreated, getTicketById } from '../firebase/firebase';
+import { addTicketBuyer, getTicketById } from '../firebase/firebase';
 import mbway from '../assets/mbway.png';
 import multibanco from '../assets/multibanco.png';
-import axios from 'axios';
 import MultibancoModel from '../modals/MultibancoModel';
 
 export default function Info({ setInfo, setSummary, contribution }) {
@@ -93,7 +92,7 @@ export default function Info({ setInfo, setSummary, contribution }) {
             }
         }
 
-        if (names.length !== contribution.tickets || names.some(name => name.trim() === '')) {
+        if (names.length !== contribution.tickets && checkboxChecked || names.some(name => name.trim() === '')) {
             setNamesError(true);
             setBlockButton(false);
         }
@@ -122,14 +121,12 @@ export default function Info({ setInfo, setSummary, contribution }) {
                 setTimeout(async() => {
                     if (result !== false) {
                         let ticketUpdated = await getTicketById(result);
-                        console.log(ticketUpdated);
                         if (ticketUpdated !== null && ticketUpdated.referenceCreated) {
                             setInfo(prevInfo => ({...prevInfo, status: 'completed' }));
                             setSummary(prevSummary => ({...prevSummary, status: 'current' }));
                             setBlockButton(false);
                             return;
                         } else {
-                            console.log("try again")
                             setTimeout(async() => {
                                 ticketUpdated = await getTicketById(result);
                                 if (ticketUpdated !== null && ticketUpdated.referenceCreated) {
@@ -156,7 +153,6 @@ export default function Info({ setInfo, setSummary, contribution }) {
                 setTimeout(async() => {
                     if (result !== false) {
                         let ticketUpdated = await getTicketById(result);
-                        console.log(ticketUpdated);
                         if (ticketUpdated !== null && ticketUpdated.referenceCreated) {
                             setBlockButton(false);
                             setMBInfo({
@@ -169,7 +165,6 @@ export default function Info({ setInfo, setSummary, contribution }) {
                         } else {
                             setTimeout(async() => {
                                 ticketUpdated = await getTicketById(result);
-                                console.log(ticketUpdated);
                                 if (ticketUpdated !== null && ticketUpdated.referenceCreated) {
                                     setBlockButton(false);
                                     setMBInfo({
