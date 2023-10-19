@@ -105,7 +105,7 @@ export default function Contribution({ contribution, setContribution, setInfo })
         const rowIcons = [];
         for (let col = 0; col < 5; col++) {
             const index = row * 5 + col;
-            if (index < total/25) {
+            if (index < Math.floor(total/25)) {
                 rowIcons.push(
                     <FontAwesomeIcon
                         key={index}
@@ -208,7 +208,7 @@ export default function Contribution({ contribution, setContribution, setInfo })
                                         EUR€ {total}
                                     </p>
                                     <p className="mt-4 text-sm font-medium text-gray-900">
-                                        EQUIVALE A {Math.round(total / 25)} VIDAS
+                                        EQUIVALE A {Math.floor(total / 25)} VIDAS
                                     </p>
                                 </div>
                             </div>
