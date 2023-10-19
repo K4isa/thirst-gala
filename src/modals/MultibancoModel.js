@@ -107,6 +107,9 @@ export default function MultibancoModel({setMBModalVisible, mbInfo, changeFromMu
                                     >
                                         FECHAR
                                     </Button>
+                                    <p className="text-sm mb-2 text-red-600 text-center" id="name-error">
+                                        Antes de fechar, por favor, registe a informação de pagamento.
+                                    </p>
                                 </div>
                             </Dialog.Panel>
                         </Transition.Child>

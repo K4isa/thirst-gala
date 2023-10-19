@@ -138,7 +138,17 @@ export default function Info({ setInfo, setSummary, contribution }) {
                                     setBlockButton(false);
                                     return;
                                 } 
+                                if (ticketUpdated !== null && ticketUpdated.error !== false) {
+                                    setInternalError(true);
+                                    setBlockButton(false);
+                                    return;
+                                }
                             }, 7000)
+                        }
+                        if (ticketUpdated !== null && ticketUpdated.error !== false) {
+                            setInternalError(true);
+                            setBlockButton(false);
+                            return;
                         }
                     }
                 }, 7000);
@@ -170,13 +180,21 @@ export default function Info({ setInfo, setSummary, contribution }) {
                                     setMBModalVisible(true);
                                     return;
                                 } 
+                                if (ticketUpdated !== null && ticketUpdated.error !== false) {
+                                    setInternalError(true);
+                                    setBlockButton(false);
+                                    return;
+                                }
                             }, 5000)
+                        }
+                        if (ticketUpdated !== null && ticketUpdated.error !== false) {
+                            setInternalError(true);
+                            setBlockButton(false);
+                            return;
                         }
                     }
                 }, 10000);
             }
-            setInternalError(true);
-            setBlockButton(false);
         }
     }
 

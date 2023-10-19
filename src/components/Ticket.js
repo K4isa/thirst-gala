@@ -65,7 +65,10 @@ export default function Ticket({ setTicket, setContribution }) {
                     NÚMERO DE BILHETES
                 </h3>
                 <div className="w-full mt-1 ring-1 ring-thirst-gray"/>
-                <Col className="mt-8 mb-7">
+                <h3 className="block mt-4 text-md font-bold text-thirst-blue">
+                    11 de novembro | 20:00
+                </h3>
+                <Col className="mt-4 mb-7">
                     <Row style={{ display: 'flex', alignItems: 'center' }}>
                         <Button
                             className="rounded-md bg-thirst-light-grey p-1 me-3 text-white shadow-md hover:bg-light-grey-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
