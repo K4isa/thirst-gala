@@ -71,7 +71,7 @@ export default function CountDown({unavailable}) {
                     <h3 className="block mt-4 text-lg font-bold text-thirst-blue">
                         11 de novembro | 20:00
                     </h3>
-                    {unavailable ? (
+                    {!unavailable ? (
                         <Link to="/bilhetes/comprar">
                             <Button
                                 className="rounded-sm justify-center mt-5 bg-thirst-blue px-20 py-2 text-sm font-semibold text-white shadow-md hover:bg-white/10 hover:text-thirst-blue ring-2 ring-thirst-blue hover:ring-thirst-blue"
