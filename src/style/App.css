@@ -30,6 +30,22 @@
   align-items: center;
 }
 
+@media (max-width: 768px) {
+  .text-center-home {
+    order: -1;
+  }
+  .home-page {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .first-col {
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+}
+
 .countdown-container {
   display: flex;
   justify-content: space-around;
