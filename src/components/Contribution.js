@@ -126,7 +126,7 @@ export default function Contribution({ contribution, setContribution, setInfo })
             }
         }
         ticketIcons.push(
-            <div key={row} className="flex mt-2 w-full justify-between">
+            <div key={row} className="flex mt-2 md:justify-between flex-wrap">
                 {rowIcons}
             </div>
         );
@@ -138,7 +138,7 @@ export default function Contribution({ contribution, setContribution, setInfo })
         <>
             {otherContribution === 0 && (
                 <>
-                    <Container className="flex mx-auto mt-5 mb-5">
+                    <Container className="flex flex-col md:flex-row mx-auto mt-2">
                         <div className="flex-1 p-8">
                             <h3 className="block text-s mb-3 leading-6 text-gray-900">
                                 QUANTAS VIDAS PRETENDE ADICIONAR?
@@ -225,7 +225,7 @@ export default function Contribution({ contribution, setContribution, setInfo })
                 </>
             )}
             {otherContribution === 1 && (
-                <Container className="flex mx-auto mt-5">
+                    <Container className="flex flex-col md:flex-row mx-auto mt-2">
                     <div className="flex-1 p-8">
                         <h3 className="block text-xs font-bold leading-6 text-gray-900">
                             QUAL O MONTANTE QUE QUER DAR PELOS SEUS BILHETES?
@@ -288,32 +288,31 @@ export default function Contribution({ contribution, setContribution, setInfo })
 
                 <Container className="mx-auto mt-5 flex flex-col items-center justify-center h-center px-10">
                     <p
-                        className="mt-5 text-center text-md font-bold text-thirst-dark-grey"
-                        style={{ width: '75%' }}
+                        className="mt-5 text-center text-md font-bold text-thirst-dark-grey lg:w-3/4 sm:w-full"
                     >
                         Durante o decorrer da gala, desenrolar-se-á um momento para a realização de doações por parte da plateia presente. Este momento será previamente identificado pelos apresentadores do evento, pelo que estará ao dispor de cada individualidade da plateia a realização de doações de um montante selecionado por cada uma.<br></br>
                         Para que a sua doação seja correntemente realizada deve, no momento que considerar oportuno, levantar a sua mão, para que a doação seja válida. Caso prefira uma doação mais “silenciosa” e discreta, poderá usar a nossa plataforma de doações online, que será disponibilizada durante o dia da gala.<br></br>
                         Para a realização do pagamento da respetiva doação, no final da gala, caso possível, será abordado por um membro do Thirst Project Portugal, para que este o auxilie no pagamento da doação ou ser-lhe-á enviado um email com o todas as instruções, para a realização do pagamento da mesma.
                     </p>
-                    <div className="flex mt-2 justify-between px-10">
-                            <Button
-                                className="rounded-sm mt-8 bg-white/10 px-10 py-2 text-sm font-semibold text-thirst-blue shadow-md hover:bg-thirst-blue hover:text-white ring-2 ring-thirst-blue hover:ring-thirst-blue"
-                                onClick={changePageDisplay}    
-                            >
-                                VOLTAR
-                            </Button>
-                            <Button
-                                className="rounded-sm mt-8 bg-thirst-blue px-20 mx-10 py-2 text-sm font-semibold text-white shadow-md hover:bg-white/10 hover:text-thirst-blue ring-2 ring-thirst-blue hover:ring-thirst-blue"
-                                onClick={() => setDonationModalVisible(true)}    
-                            >
-                                DOAR NA GALA
-                            </Button>
-                            <Button
-                                className="rounded-sm mt-8 bg-white/10 px-10 py-2 text-sm font-semibold text-thirst-blue shadow-md hover:bg-thirst-blue hover:text-white ring-2 ring-thirst-blue hover:ring-thirst-blue"
-                                onClick={() => { setOtherContribution(1); setAddLifePage(false); }}    
-                            >
-                                DOAR MAIS AGORA
-                            </Button>
+                    <div className="flex mt-2 flex-col sm:flex-row justify-center sm:justify-between sm:px-10">
+                        <Button
+                            className="rounded-sm w-full mt-8 bg-white/10 px-10 py-2 text-sm font-semibold text-thirst-blue shadow-md hover:bg-thirst-blue hover:text-white ring-2 ring-thirst-blue hover:ring-thirst-blue"
+                            onClick={changePageDisplay}    
+                        >
+                            VOLTAR
+                        </Button>
+                        <Button
+                            className="rounded-sm w-full mt-8 bg-thirst-blue px-20 sm:mx-10 py-2 text-sm font-semibold text-white shadow-md hover:bg-white/10 hover:text-thirst-blue ring-2 ring-thirst-blue hover:ring-thirst-blue"
+                            onClick={() => setDonationModalVisible(true)}    
+                        >
+                            DOAR NA GALA
+                        </Button>
+                        <Button
+                            className="rounded-sm w-full mt-8 bg-white/10 px-10 py-2 text-sm font-semibold text-thirst-blue shadow-md hover:bg-thirst-blue hover:text-white ring-2 ring-thirst-blue hover:ring-thirst-blue"
+                            onClick={() => { setOtherContribution(1); setAddLifePage(false); }}    
+                        >
+                            DOAR MAIS AGORA
+                        </Button>
                     </div>
                 </Container>
             )}

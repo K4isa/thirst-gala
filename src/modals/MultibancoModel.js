@@ -68,50 +68,52 @@ export default function MultibancoModel({setMBModalVisible, mbInfo, changeFromMu
                             leaveFrom="opacity-100 translate-y-0 sm:scale-100"
                             leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                         >
-                            <Dialog.Panel style={{borderRadius: '2rem' }} className="relative transform overflow-hidden bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-xl sm:p-6">
-                                <div>
-                                    <div className="mx-auto flex items-center justify-center">
-                                        <Image src={logo} alt="logo" width={100} height={100} />
+                            <div className="fixed inset-0 z-10 w-screen h-screen flex items-center justify-center bg-transparent">
+                                <Dialog.Panel style={{borderRadius: '2rem' }} className="relative transform overflow-hidden bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-xl sm:p-6 mx-5 sm:mx-auto">
+                                    <div>
+                                        <div className="mx-auto flex items-center justify-center">
+                                            <Image src={logo} alt="logo" width={100} height={100} />
+                                        </div>
+                                        <div className="mt-3 text-center sm:mt-5">
+                                            <Dialog.Title as="h3" className="text-xl font-extrabold leading-6 text-thirst-blue">
+                                                INFORMAÇÃO DE PAGAMENTO
+                                            </Dialog.Title>
+                                        </div>
                                     </div>
-                                    <div className="mt-3 text-center sm:mt-5">
-                                        <Dialog.Title as="h3" className="text-xl font-extrabold leading-6 text-thirst-blue">
-                                            INFORMAÇÃO DE PAGAMENTO
-                                        </Dialog.Title>
+                                    <div className="mt-5 sm:mt-6 flex flex-col justify-center">
+                                        <ul role="list" className="divide-y divide-gray-100">
+                                            {paymentInfo.map((person) => (
+                                                <li key={person.email} className="relative flex justify-between gap-x-6 py-5">
+                                                    <div className="flex min-w-0 gap-x-4">
+                                                        <div className="min-w-0 flex-auto">
+                                                            <p className="text-sm font-semibold leading-6 text-gray-900">
+                                                                <a href={person.href}>
+                                                                <span className="absolute inset-x-0 -top-px bottom-0" />
+                                                                {person.name}
+                                                                </a>
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex shrink-0 items-center gap-x-4">
+                                                        <div className="hidden sm:flex sm:flex-col sm:items-end">
+                                                            <p className="text-sm leading-6 text-gray-900">{person.role}</p>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                        <Button
+                                            className="inline-flex w-full justify-center rounded-md bg-thirst-blue px-3 py-2 text-xs font-semibold text-white shadow-sm hover:bg-thirst-grey focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                                            onClick={changePage}
+                                        >
+                                            FECHAR
+                                        </Button>
+                                        <p className="text-sm mt-3 text-red-600 text-center" id="name-error">
+                                            Antes de fechar, por favor, registe a informação de pagamento.
+                                        </p>
                                     </div>
-                                </div>
-                                <div className="mt-5 sm:mt-6 flex flex-col justify-center">
-                                    <ul role="list" className="divide-y divide-gray-100">
-                                        {paymentInfo.map((person) => (
-                                            <li key={person.email} className="relative flex justify-between gap-x-6 py-5">
-                                                <div className="flex min-w-0 gap-x-4">
-                                                    <div className="min-w-0 flex-auto">
-                                                        <p className="text-sm font-semibold leading-6 text-gray-900">
-                                                            <a href={person.href}>
-                                                            <span className="absolute inset-x-0 -top-px bottom-0" />
-                                                            {person.name}
-                                                            </a>
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                                <div className="flex shrink-0 items-center gap-x-4">
-                                                    <div className="hidden sm:flex sm:flex-col sm:items-end">
-                                                        <p className="text-sm leading-6 text-gray-900">{person.role}</p>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                    <Button
-                                        className="inline-flex w-full justify-center rounded-md bg-thirst-blue px-3 py-2 text-xs font-semibold text-white shadow-sm hover:bg-thirst-grey focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                                        onClick={changePage}
-                                    >
-                                        FECHAR
-                                    </Button>
-                                    <p className="text-sm mt-3 text-red-600 text-center" id="name-error">
-                                        Antes de fechar, por favor, registe a informação de pagamento.
-                                    </p>
-                                </div>
-                            </Dialog.Panel>
+                                </Dialog.Panel>
+                            </div>
                         </Transition.Child>
                     </div>
                 </div>

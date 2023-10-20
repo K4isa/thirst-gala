@@ -50,7 +50,7 @@ export default function Ticket({ setTicket, setContribution }) {
             }
         }
         ticketIcons.push(
-            <div key={row} className="flex mt-2 w-full justify-between">
+            <div key={row} className="flex mt-2 md:justify-between flex-wrap">
                 {rowIcons}
             </div>
         );
@@ -59,7 +59,7 @@ export default function Ticket({ setTicket, setContribution }) {
     };
 
     return (
-        <Container className="flex mx-auto mt-5">
+        <Container className="flex flex-col md:flex-row mx-auto mt-2">
             <div className="flex-1 p-8">
                 <h3 className="block text-xs font-bold leading-6 text-gray-900">
                     NÚMERO DE BILHETES
@@ -119,7 +119,7 @@ export default function Ticket({ setTicket, setContribution }) {
                 <div className="mt-5 flex flex-col items-center justify-center">
                     {generateTicketIcons()}
                     <Button
-                        className="rounded-sm mt-4 bg-white/10 px-10 py-2 text-sm font-semibold text-thirst-blue shadow-md hover:bg-thirst-blue hover:text-white ring-2 ring-thirst-blue hover:ring-thirst-blue"
+                        className="rounded-sm mt-8 bg-white/10 px-10 py-2 text-sm font-semibold text-thirst-blue shadow-md hover:bg-thirst-blue hover:text-white ring-2 ring-thirst-blue hover:ring-thirst-blue"
                         onClick={validateDonation}    
                     >
                         Continuar

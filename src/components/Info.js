@@ -214,7 +214,7 @@ export default function Info({ setInfo, setSummary, contribution }) {
     };
 
     return (
-        <Container className="flex mx-auto mt-5">
+        <Container className="flex flex-col md:flex-row mx-auto mt-2">
             <div className="flex-1 p-8">
                 <h3 className="block text-xs font-bold leading-6 text-gray-900">
                     COMPLETE COM A SUA INFORMAÇÃO
@@ -341,7 +341,7 @@ export default function Info({ setInfo, setSummary, contribution }) {
                                 type="number"
                                 name="phone"
                                 id="dedication"
-                                className="block w-full mt-4 rounded-sm border-0 py-1.5 pr-10 text-black-900 ring-2 ring-inset ring-thirst-blue placeholder:text-thirst-blue focus:ring-2 focus:ring-inset focus:ring-thirst-blue sm:text-sm sm:leading-6"
+                                className="block w-full mt-4 rounded-sm border-0 py-1.5 text-black-900 ring-2 ring-inset ring-thirst-blue placeholder:text-thirst-blue focus:ring-2 focus:ring-inset focus:ring-thirst-blue sm:text-sm sm:leading-6"
                                 placeholder="Número de telefone (sem indicativo)"
                                 aria-describedby="phone"
                                 value={phone}
@@ -355,13 +355,13 @@ export default function Info({ setInfo, setSummary, contribution }) {
                                 )}
                         </div>
                         {phoneError && (
-                            <p className="text-sm mb-2 text-red-600" id="name-error">
+                            <p className="text-sm text-center mb-2 text-red-600" id="name-error">
                                 Número inválido (caso tenha introduzido indicativo, retire-o)
                             </p>
                         )}
                     </>
                 )}
-                <div className="relative flex items-start">
+                <div className="relative flex items-start mb-5">
                     <div className="flex h-6 items-center">
                         <input
                             id="nif"
@@ -451,7 +451,7 @@ export default function Info({ setInfo, setSummary, contribution }) {
                     </>
                 )}
                 
-                <div className="relative flex items-start">
+                <div className="relative flex items-start mt-4">
                     <Button
                         className={`text-left ml-1 text-xxs leading-6 ${termsAccepted ? 'text-thirst-blue font-bold' : 'text-gray-900'} hover:text-thirst-blue hover:font-bold`}
                         onClick={handleTermsChange}
