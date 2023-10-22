@@ -1,5 +1,5 @@
 import { Container, Button, Row, Col } from 'react-bootstrap';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { PlusIcon, MinusIcon } from '@heroicons/react/20/solid'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPerson } from '@fortawesome/free-solid-svg-icons'; // Import the specific solid icon you want to use
@@ -29,7 +29,7 @@ export default function Ticket({ setTicket, setContribution }) {
         const rowIcons = [];
         for (let col = 0; col < 5; col++) {
             const index = row * 5 + col;
-            if (index <  tickets * 2) {
+            if (index <  tickets) {
                 rowIcons.push(
                     <FontAwesomeIcon
                         key={index}
@@ -57,6 +57,14 @@ export default function Ticket({ setTicket, setContribution }) {
         }
         return ticketIcons;
     };
+
+    const scrollToTop = () => {
+        window.scrollTo(0, 0);
+    };
+
+    useEffect(() => {
+        scrollToTop();
+    }, []);
 
     return (
         <Container className="flex flex-col md:flex-row mx-auto mt-2">
@@ -107,7 +115,7 @@ export default function Ticket({ setTicket, setContribution }) {
                 <div className="w-full mt-1 mb-5 ring-1 ring-thirst-gray"/>
 
                 <p className="text-2xl ml-2 font-bold">
-                    EUR€ {tickets * 50}
+                    EUR€ {tickets * 25}
                 </p>
             </div>
             <div className="flex-1 p-8">

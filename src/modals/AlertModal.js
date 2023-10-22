@@ -12,14 +12,20 @@ export default function AlertModal({setModalVisible, setAddLifePage, setOtherCon
         setModalVisible(false)
     }
 
+    const scrollToTop = () => {
+        window.scrollTo(0, 0);
+    };
+
     const setContributionPage = () => {
         setOtherContribution(1)
+        scrollToTop();
         setAddLifePage(true)
         closeModal()
     }
 
     const setInfoPage = () => {
         setOtherContribution(2)
+        scrollToTop();
         closeModal()
     }
 

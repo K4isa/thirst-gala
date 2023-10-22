@@ -1,5 +1,5 @@
 import { Container, Button, Image } from 'react-bootstrap';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ExclamationCircleIcon } from '@heroicons/react/20/solid'
 import TermsModal from '../modals/TermsModal';
 import { addTicketBuyer, getTicketById } from '../firebase/firebase';
@@ -92,7 +92,7 @@ export default function Info({ setInfo, setSummary, contribution }) {
             }
         }
 
-        if (names.length !== contribution.tickets && checkboxChecked || names.some(name => name.trim() === '')) {
+        if ((names.length !== contribution.tickets && checkboxChecked) || names.some(name => name.trim() === '')) {
             setNamesError(true);
             setBlockButton(false);
         }
@@ -100,7 +100,7 @@ export default function Info({ setInfo, setSummary, contribution }) {
             const info = {
                 names: names,
                 tickets: contribution.tickets,
-                total: contribution.total ? contribution.total : contribution.tickets * 50,
+                total: contribution.total ? contribution.total : contribution.tickets * 25,
                 nif: nif,
                 email: email,
                 phone: phone,
@@ -213,6 +213,14 @@ export default function Info({ setInfo, setSummary, contribution }) {
         }
     };
 
+    const scrollToTop = () => {
+        window.scrollTo(0, 0);
+    };
+
+    useEffect(() => {
+        scrollToTop();
+    }, []);
+
     return (
         <Container className="flex flex-col md:flex-row mx-auto mt-2">
             <div className="flex-1 p-8">
@@ -308,7 +316,7 @@ export default function Info({ setInfo, setSummary, contribution }) {
                     </h3>
                     <div className="w-full mt-1 ring-1 ring-thirst-gray"/>
                     <p className="text-2xl mt-5 font-bold text-black">
-                        EUR€ {contribution.total ? contribution.total : contribution.tickets * 50}
+                        EUR€ {contribution.total ? contribution.total : contribution.tickets * 25}
                     </p>
                 </div>
             </div>

@@ -1,5 +1,5 @@
 import { Container, Button, Row, Col } from 'react-bootstrap';
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { PlusIcon, MinusIcon } from '@heroicons/react/20/solid'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPerson } from '@fortawesome/free-solid-svg-icons'; // Import the specific solid icon you want to use
@@ -7,11 +7,11 @@ import AlertModal from '../modals/AlertModal';
 import DonationModal from '../modals/DonationModal';
 
 export default function Contribution({ contribution, setContribution, setInfo }) {
-    const [tickets, setTickets] = useState(contribution.tickets*2);
+    const [tickets, setTickets] = useState(contribution.tickets);
     
     const [maxTickets, setMaxTickets] = useState(false);
     const [amount, setAmount] = useState(0);
-    const [total, setTotal] = useState(contribution.tickets * 50);
+    const [total, setTotal] = useState(contribution.tickets * 25);
     const [modalVisible, setModalVisible] = useState(false);
     const [otherContribution, setOtherContribution] = useState(0);
     const [percentage, setPercentage] = useState(0);
@@ -23,6 +23,7 @@ export default function Contribution({ contribution, setContribution, setInfo })
 
     const changePageDisplay = () => {
         setOtherContribution(0);
+        scrollToTop();
         setAmount(0);
         setPercentage(0);
     }
@@ -47,7 +48,7 @@ export default function Contribution({ contribution, setContribution, setInfo })
 
     const validateDonation = () => {
         if (total > 250) {
-            setTotal(25 * (tickets-contribution.tickets*2) + contribution.tickets*50);
+            setTotal(25 * (tickets-contribution.tickets) + contribution.tickets*25);
             setModalVisible(true);
             inputRef.current.value = '';
             return;
@@ -70,13 +71,16 @@ export default function Contribution({ contribution, setContribution, setInfo })
     }
 
     const backFromFreeDonation = () => {
-        if (addLifePage) {
-            setOtherContribution(0);
-        }
+        if (addLifePage) setOtherContribution(0);
         else setOtherContribution(2);
+        scrollToTop();
         setAmount(0);
         setPercentage(0);
     }
+
+    const scrollToTop = () => {
+        window.scrollTo(0, 0);
+    };
 
     const setOtherContributionAmount = (value) => {
         setOtherContributionError('');
@@ -91,8 +95,8 @@ export default function Contribution({ contribution, setContribution, setInfo })
     }
 
     const prepareAmount = (value) => {
-        if (value === '') setTotal(25 * (tickets-contribution.tickets*2) + contribution.tickets*50);
-        else setTotal(25 * (tickets-contribution.tickets*2) + contribution.tickets*50 + parseInt(value));
+        if (value === '') setTotal(25 * (tickets-contribution.tickets) + contribution.tickets*25);
+        else setTotal(25 * (tickets-contribution.tickets) + contribution.tickets*25 + parseInt(value));
     }
 
     const handleKeyPress = (event) => {
@@ -133,6 +137,10 @@ export default function Contribution({ contribution, setContribution, setInfo })
         }
         return ticketIcons;
     };
+
+    useEffect(() => {
+        scrollToTop();
+    }, []);
 
     return (
         <>
@@ -309,7 +317,7 @@ export default function Contribution({ contribution, setContribution, setInfo })
                         </Button>
                         <Button
                             className="rounded-sm w-full mt-8 bg-white/10 px-10 py-2 text-sm font-semibold text-thirst-blue shadow-md hover:bg-thirst-blue hover:text-white ring-2 ring-thirst-blue hover:ring-thirst-blue"
-                            onClick={() => { setOtherContribution(1); setAddLifePage(false); }}    
+                            onClick={() => { setOtherContribution(1); scrollToTop(); setAddLifePage(false); }}    
                         >
                             DOAR MAIS AGORA
                         </Button>
@@ -320,7 +328,7 @@ export default function Contribution({ contribution, setContribution, setInfo })
                 <AlertModal setAddLifePage={setAddLifePage} setModalVisible={setModalVisible} setOtherContribution={setOtherContribution} />
             )}
             {donationModalVisible && (
-                <DonationModal setDonationModalVisible={setDonationModalVisible} setOtherContribution={setOtherContribution} validateDonationOnGala={validateDonationOnGala} />
+                <DonationModal setDonationModalVisible={setDonationModalVisible} validateDonationOnGala={validateDonationOnGala} />
             )}
         </>
     )

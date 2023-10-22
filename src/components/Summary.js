@@ -1,9 +1,16 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Container } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInstagram, faLinkedin, faTiktok, faSpotify } from '@fortawesome/free-brands-svg-icons';
 
 export default function Summary({ setSummary, summary }) {
+    const scrollToTop = () => {
+        window.scrollTo(0, 0);
+    };
+
+    useEffect(() => {
+        scrollToTop();
+    }, []);
 
     return (
         <div style={{ display: 'flex', alignItems: 'center' }}>
