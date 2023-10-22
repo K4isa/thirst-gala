@@ -8,7 +8,7 @@ import DonationModal from '../modals/DonationModal';
 
 export default function Contribution({ contribution, setContribution, setInfo }) {
     const [tickets, setTickets] = useState(contribution.tickets);
-    
+    const [isSmallWindow, setIsSmallWindow] = useState(window.innerWidth < 400);
     const [maxTickets, setMaxTickets] = useState(false);
     const [amount, setAmount] = useState(0);
     const [total, setTotal] = useState(contribution.tickets * 25);
@@ -105,41 +105,88 @@ export default function Contribution({ contribution, setContribution, setInfo })
 
     const generateTicketIcons = () => {
         const ticketIcons = [];
-        for (let row = 0; row < 2; row++) {
-        const rowIcons = [];
-        for (let col = 0; col < 5; col++) {
-            const index = row * 5 + col;
-            if (index < Math.floor(total/25)) {
-                rowIcons.push(
-                    <FontAwesomeIcon
-                        key={index}
-                        icon={faPerson}
-                        style={{ color: '#1bb7c5' }}
-                        size="6x"
-                        className='me-2 mb-5'
-                    />
+        if (isSmallWindow) {
+            for (let row = 0; row < 5; row++) {
+                const rowIcons = [];
+                for (let col = 0; col < 2; col++) {
+                    const index = row * 2 + col;
+                    if (index < Math.floor(total/25)) {
+                        rowIcons.push(
+                            <FontAwesomeIcon
+                                key={index}
+                                icon={faPerson}
+                                style={{ color: '#1bb7c5' }}
+                                size="6x"
+                                className='me-2 mb-5'
+                            />
+                        );
+                    } else {
+                        rowIcons.push(
+                            <FontAwesomeIcon
+                                key={index}
+                                icon={faPerson}
+                                style={{ color: '#c9c9c9' }}
+                                size="6x"
+                                className='me-2 mb-5'
+                            />
+                        );
+                    }
+                }
+                ticketIcons.push(
+                    <div key={row} className="flex mt-2 justify-between flex-wrap">
+                        {rowIcons}
+                    </div>
                 );
-            } else {
-                rowIcons.push(<FontAwesomeIcon
-                    key={index}
-                    icon={faPerson}
-                    style={{ color: '#c9c9c9' }}
-                    size="6x"
-                    className='me-2 mb-5'
-                    />);
+            }
+        } else {
+            for (let row = 0; row < 2; row++) {
+                const rowIcons = [];
+                for (let col = 0; col < 5; col++) {
+                    const index = row * 5 + col;
+                    if (index < Math.floor(total/25)) {
+                        rowIcons.push(
+                            <FontAwesomeIcon
+                                key={index}
+                                icon={faPerson}
+                                style={{ color: '#1bb7c5' }}
+                                size="6x"
+                                className='me-2 mb-5'
+                            />
+                        );
+                    } else {
+                        rowIcons.push(
+                            <FontAwesomeIcon
+                                key={index}
+                                icon={faPerson}
+                                style={{ color: '#c9c9c9' }}
+                                size="6x"
+                                className='me-2 mb-5'
+                            />
+                        );
+                    }
+                }
+                ticketIcons.push(
+                    <div key={row} className="flex mt-2 md:justify-between flex-wrap">
+                        {rowIcons}
+                    </div>
+                );
             }
         }
-        ticketIcons.push(
-            <div key={row} className="flex mt-2 md:justify-between flex-wrap">
-                {rowIcons}
-            </div>
-        );
-        }
+    
         return ticketIcons;
+    };
+
+    const updateWindowDimensions = () => {
+        setIsSmallWindow(window.innerWidth < 400);
     };
 
     useEffect(() => {
         scrollToTop();
+        window.addEventListener('resize', updateWindowDimensions);
+
+        return () => {
+            window.removeEventListener('resize', updateWindowDimensions);
+        };
     }, []);
 
     return (
