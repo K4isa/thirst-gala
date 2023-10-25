@@ -3,44 +3,18 @@ import { Dialog, Transition } from '@headlessui/react'
 import { Button, Image } from 'react-bootstrap'
 import logo from '../assets/gala_logo.png';
 
-export default function MultibancoModel({setMBModalVisible, mbInfo, changeFromMultibanco }) {
+export default function MbwayModel({setMBwayModalVisible, changeFromMultibanco }) {
     const [open, setOpen] = useState(true)
-    const today = new Date();
-    const tomorrow = new Date(today.getTime() + 24 * 60 * 60 * 1000);
-    const day = String(tomorrow.getDate()).padStart(2, '0');
-    const month = String(tomorrow.getMonth() + 1).padStart(2, '0');
-    const year = tomorrow.getFullYear();
-  
-    const finalDate = `${day}/${month}/${year}`;
   
     const closeModal = () => {
         setOpen(false)
-        setMBModalVisible(false)
+        setMBwayModalVisible(false)
     }
 
     const changePage = () => {
         changeFromMultibanco()
         closeModal()
     }
-
-    const paymentInfo = [
-        {
-          name: 'Entidade',
-          role: mbInfo.entidade,
-        },
-        {
-          name: 'Referência',
-          role: mbInfo.referencia,
-        },
-        {
-          name: 'Valor',
-          role: `${mbInfo.valor}€`,
-        },
-        {
-          name: 'Prazo de Pagamento',
-          role: finalDate,
-        }
-    ]
 
     return (
         <Transition.Root show={open} as={Fragment}>
@@ -78,37 +52,21 @@ export default function MultibancoModel({setMBModalVisible, mbInfo, changeFromMu
                                             <Dialog.Title as="h3" className="text-xl font-extrabold leading-6 text-thirst-blue">
                                                 INFORMAÇÃO DE PAGAMENTO
                                             </Dialog.Title>
+                                            <div className="mt-5 mb-5">
+                                                <p className="text-sm font-md text-thirst-dark-grey">
+                                                    Recebeu um pedido de MBway no seu telemóvel.
+                                                </p>
+                                                <p className="text-sm mt-2 font-md text-thirst-dark-grey">
+                                                    Tem <b>4 minutos</b> para o aceitar.
+                                                </p>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div className="mt-5 sm:mt-6 flex flex-col justify-center">
-                                        <ul role="list" className="divide-y divide-gray-100">
-                                            {paymentInfo.map((person) => (
-                                                <li key={person.name} className="relative flex justify-between gap-x-6 py-5">
-                                                    <div className="flex min-w-0 gap-x-4">
-                                                        <div className="min-w-0 flex-auto">
-                                                            <p className="text-sm font-semibold leading-6 text-gray-900">
-                                                                <span className="absolute inset-x-0 -top-px bottom-0" />
-                                                                {person.name}
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                    <div className="flex shrink-0 items-center gap-x-4">
-                                                        <div className="hidden sm:flex sm:flex-col sm:items-end">
-                                                            <p className="text-sm leading-6 text-gray-900">{person.role}</p>
-                                                        </div>
-                                                    </div>
-                                                </li>
-                                            ))}
-                                        </ul>
                                         <Button
                                             className="inline-flex w-full justify-center rounded-md bg-thirst-blue px-3 py-2 text-xs font-semibold text-white shadow-sm hover:bg-thirst-grey focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                                             onClick={changePage}
                                         >
                                             FECHAR
                                         </Button>
-                                        <p className="text-sm mt-3 text-red-600 text-center" id="name-error">
-                                            Antes de fechar, por favor, registe a informação de pagamento.
-                                        </p>
                                     </div>
                                 </Dialog.Panel>
                             </div>

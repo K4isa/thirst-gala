@@ -6,6 +6,7 @@ import { addTicketBuyer, getTicketById } from '../firebase/firebase';
 import mbway from '../assets/mbway.png';
 import multibanco from '../assets/multibanco.png';
 import MultibancoModel from '../modals/MultibancoModel';
+import MbwayModel from '../modals/MbwayModel';
 
 export default function Info({ setInfo, setSummary, contribution }) {
     const [emailError, setEmailError] = useState(false);
@@ -27,6 +28,7 @@ export default function Info({ setInfo, setSummary, contribution }) {
     const [blockButton, setBlockButton] = useState(false);
     const [internalError, setInternalError] = useState(false);
     const [mbModalVisible, setMBModalVisible] = useState(false);
+    const [mbwayModalVisible, setMBwayModalVisible] = useState(false);
     const [paymentTypeError, setPaymentTypeError] = useState(false);
 
     const changeFromMultibanco = () => {
@@ -128,17 +130,15 @@ export default function Info({ setInfo, setSummary, contribution }) {
                     if (result !== false) {
                         let ticketUpdated = await getTicketById(result);
                         if (ticketUpdated !== null && ticketUpdated.referenceCreated) {
-                            setInfo(prevInfo => ({...prevInfo, status: 'completed' }));
-                            setSummary(prevSummary => ({...prevSummary, status: 'current' }));
                             setBlockButton(false);
+                            setMBwayModalVisible(true);
                             return;
                         } else {
                             setTimeout(async() => {
                                 ticketUpdated = await getTicketById(result);
                                 if (ticketUpdated !== null && ticketUpdated.referenceCreated) {
-                                    setInfo(prevInfo => ({...prevInfo, status: 'completed' }));
-                                    setSummary(prevSummary => ({...prevSummary, status: 'current' }));
                                     setBlockButton(false);
+                                    setMBwayModalVisible(true);
                                     return;
                                 } 
                                 if (ticketUpdated !== null && ticketUpdated.error !== false) {
@@ -328,20 +328,20 @@ export default function Info({ setInfo, setSummary, contribution }) {
             </div>
             <div className="flex-1 p-8">
                 <h3 className="block text-xs font-bold leading-6 text-gray-900">
-                    PAGAMENTO
+                    PAGAMENTO - SELECIONE O MÉTODO
                 </h3>
                 <div className="w-full mt-1 ring-1 ring-thirst-gray"/>
                 <div className="mx-auto mt-5 mb-5">
                     <div className="flex items-center justify-center rounded-full">
                         <Button
                             className={`flex items-center ${paymentType === 'multibanco' ? 'bg-thirst-blue' : 'bg-white/10'} me-3 rounded-lg p-1`}
-                            onClick={() => setPaymentType('multibanco')}
+                            onClick={() => { setPaymentType('multibanco'); if (paymentTypeError) setPaymentTypeError(false); }}
                         >
                             <Image src={multibanco} alt="multibanco" width={40} height={40} />
                         </Button>
                         <Button
                             className={`flex items-center ${paymentType === 'mbway' ? 'bg-thirst-blue' : 'bg-white/10'} me-3 rounded-lg p-1`}
-                            onClick={() => setPaymentType('mbway')}
+                            onClick={() => { setPaymentType('mbway'); if (paymentTypeError) setPaymentTypeError(false); }}
                             >
                             <Image src={mbway} alt="mbway" width={40} height={40} />
                         </Button>
@@ -354,6 +354,9 @@ export default function Info({ setInfo, setSummary, contribution }) {
                 </div>
                 {mbModalVisible && (
                     <MultibancoModel setMBModalVisible={setMBModalVisible} mbInfo={mbInfo} changeFromMultibanco={changeFromMultibanco} />
+                )}
+                {mbwayModalVisible && (
+                    <MbwayModel setMBwayModalVisible={setMBwayModalVisible} changeFromMultibanco={changeFromMultibanco} />
                 )}
                 {paymentType === 'mbway' && (
                     <>
