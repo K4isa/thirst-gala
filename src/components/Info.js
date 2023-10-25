@@ -27,6 +27,7 @@ export default function Info({ setInfo, setSummary, contribution }) {
     const [blockButton, setBlockButton] = useState(false);
     const [internalError, setInternalError] = useState(false);
     const [mbModalVisible, setMBModalVisible] = useState(false);
+    const [paymentTypeError, setPaymentTypeError] = useState(false);
 
     const changeFromMultibanco = () => {
         setInfo(prevInfo => ({...prevInfo, status: 'completed' }));
@@ -92,11 +93,16 @@ export default function Info({ setInfo, setSummary, contribution }) {
             }
         }
 
-        if ((names.length !== contribution.tickets && checkboxChecked) || names.some(name => name.trim() === '')) {
+        if (paymentType === 'none') {
+            setBlockButton(false);
+            setPaymentTypeError(true);
+        }
+        console.log(names.length, contribution.tickets, checkboxChecked, names);
+        if ((names.length !== contribution.tickets && checkboxChecked) || names.some(name => name.trim() === '') || names.length === 0) {
             setNamesError(true);
             setBlockButton(false);
         }
-        if (!phoneError && termsAccepted && validEmail && !nifError.nif && !nifError.name && !nifError.address && !namesError) {
+        if (!phoneError && termsAccepted && validEmail && !nifError.nif && !nifError.name && !nifError.address && !namesError && paymentType !== 'none') {
             const info = {
                 names: names,
                 tickets: contribution.tickets,
@@ -325,19 +331,26 @@ export default function Info({ setInfo, setSummary, contribution }) {
                     PAGAMENTO
                 </h3>
                 <div className="w-full mt-1 ring-1 ring-thirst-gray"/>
-                <div className="mx-auto mt-5 mb-5 flex items-center justify-center rounded-full">
-                    <Button
-                        className={`flex items-center ${paymentType === 'multibanco' ? 'bg-thirst-blue' : 'bg-white/10'} me-3 rounded-lg p-1`}
-                        onClick={() => setPaymentType('multibanco')}
-                    >
-                        <Image src={multibanco} alt="multibanco" width={40} height={40} />
-                    </Button>
-                    <Button
-                        className={`flex items-center ${paymentType === 'mbway' ? 'bg-thirst-blue' : 'bg-white/10'} me-3 rounded-lg p-1`}
-                        onClick={() => setPaymentType('mbway')}
+                <div className="mx-auto mt-5 mb-5">
+                    <div className="flex items-center justify-center rounded-full">
+                        <Button
+                            className={`flex items-center ${paymentType === 'multibanco' ? 'bg-thirst-blue' : 'bg-white/10'} me-3 rounded-lg p-1`}
+                            onClick={() => setPaymentType('multibanco')}
                         >
-                        <Image src={mbway} alt="mbway" width={40} height={40} />
-                    </Button>
+                            <Image src={multibanco} alt="multibanco" width={40} height={40} />
+                        </Button>
+                        <Button
+                            className={`flex items-center ${paymentType === 'mbway' ? 'bg-thirst-blue' : 'bg-white/10'} me-3 rounded-lg p-1`}
+                            onClick={() => setPaymentType('mbway')}
+                            >
+                            <Image src={mbway} alt="mbway" width={40} height={40} />
+                        </Button>
+                    </div>
+                    {paymentTypeError && (
+                        <p className="text-sm text-center mb-2 text-red-600" id="name-error">
+                            Por favor selecione um método de pagamento
+                        </p>
+                    )}
                 </div>
                 {mbModalVisible && (
                     <MultibancoModel setMBModalVisible={setMBModalVisible} mbInfo={mbInfo} changeFromMultibanco={changeFromMultibanco} />
