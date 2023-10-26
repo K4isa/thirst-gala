@@ -82,21 +82,17 @@ export default function MultibancoModel({setMBModalVisible, mbInfo, changeFromMu
                                     </div>
                                     <div className="mt-5 sm:mt-6 flex flex-col justify-center">
                                         <ul role="list" className="divide-y divide-gray-100">
-                                            {paymentInfo.map((person) => (
-                                                <li key={person.name} className="relative flex justify-between gap-x-6 py-5">
-                                                    <div className="flex min-w-0 gap-x-4">
+                                            {paymentInfo.map((information) => (
+                                                <li key={information.name} className="relative flex justify-between gap-x-6 py-5">
+                                                    <div className="flex items-center gap-x-4">
                                                         <div className="min-w-0 flex-auto">
                                                             <p className="text-sm font-semibold leading-6 text-gray-900">
                                                                 <span className="absolute inset-x-0 -top-px bottom-0" />
-                                                                {person.name}
+                                                                {information.name}
                                                             </p>
                                                         </div>
                                                     </div>
-                                                    <div className="flex shrink-0 items-center gap-x-4">
-                                                        <div className="hidden sm:flex sm:flex-col sm:items-end">
-                                                            <p className="text-sm leading-6 text-gray-900">{person.role}</p>
-                                                        </div>
-                                                    </div>
+                                                    <p className="text-sm leading-6 text-gray-900">{information.role}</p>
                                                 </li>
                                             ))}
                                         </ul>
