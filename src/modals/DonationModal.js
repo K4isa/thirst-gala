@@ -37,7 +37,7 @@ export default function DonationModal({setDonationModalVisible, validateDonation
 
     return (
         <Transition.Root show={open} as={Fragment}>
-            <Dialog as="div" className="relative z-10" onClose={closeModal}>
+            <Dialog as="div" className="relative z-10" onClose={() => {}}>
                 <Transition.Child
                     as={Fragment}
                     enter="ease-out duration-300"

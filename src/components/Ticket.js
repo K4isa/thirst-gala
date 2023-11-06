@@ -10,7 +10,7 @@ export default function Ticket({ setTicket, setContribution }) {
     const [isSmallWindow, setIsSmallWindow] = useState(window.innerWidth < 400);
 
     const handlePlusChange = () => {
-        if (tickets < 2) setTickets(tickets + 1);
+        if (tickets < 10) setTickets(tickets + 1);
         else setMaxTickets(true);
     };
 

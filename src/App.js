@@ -29,9 +29,9 @@ function App() {
   return (
     <Router>
       <Routes>
-        {/* <Route path='/doacoes' element={<HomePage />} /> */}
+        <Route path='/doacoes' element={<HomePage />} />
+        <Route path='/doacoes/doar' element={<DonationPage />} />
         <Route path='/bilhetes' element={<CountDown />} />
-        {/* <Route path='/doacoes/doar' element={<DonationPage />} /> */}
         {ticketsSold > 200 ? (
           <Route path='/bilhetes/comprar' element={<CountDown unavailable />} />
         ) : (

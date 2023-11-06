@@ -1,6 +1,7 @@
 import { Container, Button } from 'react-bootstrap';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ExclamationCircleIcon } from '@heroicons/react/20/solid'
+import { addDonation } from '../firebase/firebase';
 
 export default function Donation({ setDonation, setPayment }) {
     const [emailError, setEmailError] = useState(false);
@@ -19,6 +20,8 @@ export default function Donation({ setDonation, setPayment }) {
     const [isNif, setIsNif] = useState(false);
     const [nifError, setNifError] = useState({nif: false, name: false, address: false});
     const [futureContact, setFutureContact] = useState(false);
+    const [donationError, setDonationError] = useState(false);
+    const [blockButton, setBlockButton] = useState(false);
 
     const handleKeyPress = (event) => {
         if (event.key === 'e') {
@@ -38,29 +41,39 @@ export default function Donation({ setDonation, setPayment }) {
         amount ? setPercentage(Math.round(parseFloat(amount) / 12000 * 100)) : setPercentage(0);
     }
 
-    const validateDonation = () => {
+    const validateDonation = async () => {
+        setBlockButton(true);
+        if (donationError) setDonationError(false);
         const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
         const validEmail = emailRegex.test(email);
         setEmailError(!validEmail);
+        if (!validEmail) setBlockButton(false);
+
         if (isNif) {
             if (nif.nif.length !== 9 || !/^\d+$/.test(nif.nif)) {
                 setNifError(prevNif => ({...prevNif, nif: true }));
+                setBlockButton(false);
             }
             if (nif.name.trim() === '') {
                 setNifError(prevName => ({...prevName, name: true }));
+                setBlockButton(false);
             }
             if (nif.address.trim() === '') {
                 setNifError(prevAddress => ({...prevAddress, address: true }));
+                setBlockButton(false);
             }
         }
         if (!isNameHidden && name.trim() === '') {
             setNameError(true);
+            setBlockButton(false);
         }
         if (isDedication && dedication.trim() === '') {
             setDedicationError(true);
+            setBlockButton(false);
         }
         if (amount === 0 || amount === '' || amount ==='Outro') {
             setAmountError(true);
+            setBlockButton(false);
         }
         if (!dedicationError && !nameError && !amountError && validEmail && !nifError.nif && !nifError.name && !nifError.address) {
             const info = {
@@ -70,10 +83,24 @@ export default function Donation({ setDonation, setPayment }) {
                 email: email,
                 futureContact: futureContact,
                 comment: comment,
-                dedication: dedication
+                dedication: dedication,
+                paid: false,
+                referenceCreated: false,
+                error: false,
+                type: 'none',
+                referencia: null,
+                entidade: null,
             }
-            setDonation(prevDonation => ({...prevDonation, status: 'completed' }));
-            setPayment(prevPayment => ({...prevPayment, status: 'current', info }));
+            const result = await addDonation(info);
+
+            if (result) {
+                setBlockButton(false);
+                setDonation(prevDonation => ({...prevDonation, status: 'completed' }));
+                setPayment(prevPayment => ({...prevPayment, status: 'current', info: info, infoId: result }));
+            } else {
+                setBlockButton(false);
+                setDonationError(true);
+            }
         }
     }
 
@@ -93,8 +120,16 @@ export default function Donation({ setDonation, setPayment }) {
         setNifError({nif: false, name: false, address: false});
     }
 
+    const scrollToTop = () => {
+        window.scrollTo(0, 0);
+    };
+
+    useEffect(() => {
+        scrollToTop();
+    }, []);
+
     return (
-        <Container className="flex mx-auto mt-5">
+        <Container className="flex flex-col md:flex-row mx-auto mt-2">
             <div className="flex-1 p-8">
                 <h3 className="block text-xs font-bold leading-6 text-gray-900">
                     COMPLETE COM A SUA INFORMAÇÃO
@@ -401,11 +436,21 @@ export default function Donation({ setDonation, setPayment }) {
                         EQUIVALE A {percentage}% DE UM FURO
                     </p>
                     <Button
-                        className="rounded-sm mt-8 bg-white/10 px-10 py-2 text-sm font-semibold text-thirst-blue shadow-md hover:bg-thirst-blue hover:text-white ring-2 ring-thirst-blue hover:ring-thirst-blue"
-                        onClick={validateDonation}    
+                        className={`rounded-sm mt-8 bg-white/10 px-10 py-2 text-sm font-semibold text-thirst-blue shadow-md ring-2 ring-thirst-blue ${!blockButton ? 'hover:bg-thirst-blue hover:text-white hover:ring-thirst-blue' : ''}`}
+                        onClick={validateDonation}
+                        disabled={blockButton}
                     >
-                        CONTINUAR
+                        {blockButton ? (
+                            <div className="loader"></div>
+                        ) : (
+                            'CONTINUAR'
+                        )}
                     </Button>
+                    {donationError && (
+                        <p className="text-sm text-center mt-2 text-red-600" id="address-error">
+                            Erro ao processar a doação, por favor tente novamente. Se o erro persistir, por favor contacte-nos através do email <a href="mailto:gala@thirstproject.pt" className="text-thirst-blue">gala@thirstproject.pt</a>
+                        </p>
+                    )}
                 </div>
             </div>
         </Container>

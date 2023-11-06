@@ -25,6 +25,52 @@ const addTicketBuyer = async (ticketBuyer) => {
   }
 };
 
+const addDonation = async (donation) => {
+  try {
+    const docRef = await addDoc(collection(db, 'singleDonation'), donation);
+    const docId = docRef.id;
+    return docId;
+  } catch (error) {
+    console.error('Error adding document: ', error);
+    return false
+  }
+};
+
+const editDonation = async (donationId, type, phone) => {
+  try {
+    const docRef = doc(db, 'singleDonation', donationId);
+    if (type === 'mbway') {
+      await updateDoc(docRef, {
+        type: type,
+        phone: phone,
+      });
+    } else {
+      await updateDoc(docRef, {
+        type: type,
+      });
+    }
+    return true;
+  } catch (error) {
+    console.error('Error updating document: ', error);
+    return false;
+  }
+}
+
+const getDonationById = async (donationId) => {
+  try {
+    const docRef = doc(db, 'singleDonation', donationId);
+    const donation = await getDoc(docRef);
+    if (!donation.exists()) {
+      return null;
+    }
+    const donationBuyer = donation.data();
+    return donationBuyer;
+  } catch (error) {
+    console.error('Error getting donation: ', error, donationId);
+    return null;
+  }
+};
+
 const getTicketById = async (ticketId) => {
   try {
     const docRef = doc(db, 'ticketBuyer', ticketId);
@@ -62,4 +108,4 @@ const checkHowManyTicketsSold = async () => {
   }
 };
 
-export { db, addTicketBuyer, getTicketById, checkHowManyTicketsSold };
+export { db, addTicketBuyer, getTicketById, checkHowManyTicketsSold, addDonation, editDonation, getDonationById };

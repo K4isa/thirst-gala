@@ -3,7 +3,7 @@ import { Container } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInstagram, faLinkedin, faTiktok, faSpotify } from '@fortawesome/free-brands-svg-icons';
 
-export default function Summary() {
+export default function SummaryDonations() {
     const scrollToTop = () => {
         window.scrollTo(0, 0);
     };
@@ -15,17 +15,20 @@ export default function Summary() {
     return (
         <div style={{ display: 'flex', alignItems: 'center' }}>
             <Container className="flex flex-col mx-auto text-center mt-10 justify-center" style={{ width: '100%' }}>
-                <h3 className="block text-2xl mt-5 font-bold text-thirst-dark-grey">
-                    A SUA COMPRA ESTÁ A MUDAR VIDAS!
+                <h3 className="block text-2xl mt-4 font-bold text-thirst-dark-grey">
+                    A SUA DOAÇÃO ESTÁ A MUDAR VIDAS!
                 </h3>
-                <h3 className="block mt-10 text-2xl text-thirst-blue">
-                    Em nome do THIRST PROJECT PORTUGAL,
+                <h3 className="block mt-7 text-2xl text-thirst-blue">
+                    Em nome do
                 </h3>
-                <h3 className="block text-2xl mt-10 font-bold text-thirst-blue">
+                <h3 className="block text-2xl text-thirst-blue">
+                    THIRST PROJECT PORTUGAL,
+                </h3>
+                <h3 className="block text-2xl mt-6 font-bold text-thirst-blue">
                     Obrigado por acreditar na nossa missão!
                 </h3>
-                <h3 className="block text-xl mt-10 text-thirst-blue">
-                    Assim que o pagamento for processado, iremos proceder à emissão do seu bilhete personalizado que será enviado para o endereço de e-mail indicado, no prazo máximo de 24horas.
+                <h3 className="block text-4xl mt-10 font-bold text-thirst-blue">
+                    DAR ÁGUA É DAR VIDA!
                 </h3>
                 <div className="mt-10">
                     <a href="https://www.instagram.com/thirstproject_pt" target="_blank" rel="noopener noreferrer">

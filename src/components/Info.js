@@ -99,7 +99,6 @@ export default function Info({ setInfo, setSummary, contribution }) {
             setBlockButton(false);
             setPaymentTypeError(true);
         }
-        console.log(names.length, contribution.tickets, checkboxChecked, names);
         if ((names.length !== contribution.tickets && checkboxChecked) || names.some(name => name.trim() === '') || names.length === 0) {
             setNamesError(true);
             setBlockButton(false);
