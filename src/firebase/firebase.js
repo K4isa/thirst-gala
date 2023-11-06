@@ -43,10 +43,12 @@ const editDonation = async (donationId, type, phone) => {
       await updateDoc(docRef, {
         type: type,
         phone: phone,
+        error: false,
       });
     } else {
       await updateDoc(docRef, {
         type: type,
+        error: false,
       });
     }
     return true;

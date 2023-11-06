@@ -127,6 +127,7 @@ exports.moneyDonation = onDocumentUpdated(
           if (response.data.sucesso === true) {
             await snapshot.ref.update({
               referenceCreated: true,
+              error: false,
             });
           } else {
             await snapshot.ref.update({
@@ -168,6 +169,7 @@ exports.moneyDonation = onDocumentUpdated(
               referenceCreated: true,
               referencia: response.data.referencia,
               entidade: response.data.entidade,
+              error: false,
             });
           } else {
             await snapshot.ref.update({
