@@ -128,8 +128,6 @@ export default function Payment({ setPayment, setSummary, payment }) {
                 setBlockButton(false);
             }
         }
-        setInternalError(true);
-        setBlockButton(false);
     }
 
     return (

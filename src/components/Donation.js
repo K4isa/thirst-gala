@@ -242,25 +242,36 @@ export default function Donation({ setDonation, setPayment }) {
                 <h3 className="block text-xs font-bold leading-6 text-gray-900">
                     QUAL O MONTANTE QUE DESEJA DOAR
                 </h3>
-                <div className="mt-5 flex justify-between">
-                    <Button
-                        className="rounded-md shadow-md me-2 bg-thirst-blue px-6 py-2 text-sm font-semibold text-white shadow-md hover:bg-thirst-blue "
-                        onClick={() => prepareAmount(1000)}
+                <div className="mt-5 flex flex-col sm:flex-row">
+                    <div
+                        className={`flex flex-col sm:flex-row ${window.innerWidth < 400 ? 'flex-wrap justify-between' : 'flex-nowrap'}`}
+                        style={window.innerWidth > 400 ? { width: '100%' } : { width: 'auto' }}
                     >
-                        €1 000
-                    </Button>
-                    <Button
-                        className="rounded-md shadow-md me-2 bg-thirst-blue px-6 py-2 text-sm font-semibold text-white shadow-md hover:bg-thirst-blue"
-                        onClick={() => prepareAmount(6000)}    
-                    >
-                        €6 000
-                    </Button>
-                    <Button
-                        className="rounded-md shadow-md bg-thirst-blue px-6 py-2 text-sm font-semibold text-white shadow-md hover:bg-thirst-blue"
-                        onClick={() => prepareAmount(12000)}
-                    >
-                        €12 000
-                    </Button>
+                        <Button
+                            className={`rounded-md shadow-md ${window.innerWidth < 400 ? 'mb-4 sm:w-auto' : 'mx-2 w-full'} bg-thirst-blue px-6 py-2 text-sm font-semibold text-white shadow-md hover:bg-thirst-blue`}
+                            onClick={() => prepareAmount(100)}
+                        >
+                            €100
+                        </Button>
+                        <Button
+                            className={`rounded-md shadow-md ${window.innerWidth < 400 ? 'mb-4 sm:w-auto' : 'mx-2 w-full'} bg-thirst-blue px-6 py-2 text-sm font-semibold text-white shadow-md hover:bg-thirst-blue`}
+                            onClick={() => prepareAmount(500)}    
+                        >
+                            €500
+                        </Button>
+                        <Button
+                            className={`rounded-md shadow-md ${window.innerWidth < 400 ? 'mb-4 sm:w-auto' : 'mx-2 w-full'} bg-thirst-blue px-6 py-2 text-sm font-semibold text-white shadow-md hover:bg-thirst-blue`}
+                            onClick={() => prepareAmount(1000)}
+                        >
+                            €1000
+                        </Button>
+                        <Button
+                            className={`rounded-md shadow-md ${window.innerWidth < 400 ? 'mb-4 sm:w-auto' : 'mx-2 w-full'} bg-thirst-blue px-6 py-2 text-sm font-semibold text-white shadow-md hover:bg-thirst-blue`}
+                            onClick={() => prepareAmount(3000)}
+                        >
+                            €3000
+                        </Button>
+                    </div>
                 </div>
                 <div className="relative mt-5 rounded-md shadow-sm">
                     <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
