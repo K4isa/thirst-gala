@@ -27,7 +27,7 @@ const addTicketBuyer = async (ticketBuyer) => {
 
 const addDonation = async (donation) => {
   try {
-    const docRef = await addDoc(collection(db, 'singleDonation'), donation);
+    const docRef = await addDoc(collection(db, 'afterGala'), donation);
     const docId = docRef.id;
     return docId;
   } catch (error) {
@@ -38,7 +38,7 @@ const addDonation = async (donation) => {
 
 const editDonation = async (donationId, type, phone) => {
   try {
-    const docRef = doc(db, 'singleDonation', donationId);
+    const docRef = doc(db, 'afterGala', donationId);
     if (type === 'mbway') {
       await updateDoc(docRef, {
         type: type,
@@ -60,7 +60,7 @@ const editDonation = async (donationId, type, phone) => {
 
 const getDonationById = async (donationId) => {
   try {
-    const docRef = doc(db, 'singleDonation', donationId);
+    const docRef = doc(db, 'afterGala', donationId);
     const donation = await getDoc(docRef);
     if (!donation.exists()) {
       return null;

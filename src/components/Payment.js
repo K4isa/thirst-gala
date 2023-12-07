@@ -116,7 +116,7 @@ export default function Payment({ setPayment, setSummary, payment }) {
                             setBlockButton(false);
                             return;
                         }
-                    }, 5000)
+                    }, 10000)
                 }
                 if (donationUpdated !== null && donationUpdated.error !== false) {
                     setInternalError(true);

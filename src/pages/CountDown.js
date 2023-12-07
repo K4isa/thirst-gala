@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Container, Image, Button } from 'react-bootstrap';
 import logo from '../assets/gala_logo.png';
 import { Link } from 'react-router-dom';
@@ -9,37 +9,38 @@ export default function CountDown({ unavailable }) {
   const [minutes, setMinutes] = useState('00');
   const [seconds, setSeconds] = useState('00');
 
-  const countdownDate = new Date('2023-11-11 20:00:00').getTime();
+  //const countdownDate = new Date('2023-11-11 20:00:00').getTime();
 
-  useEffect(() => {
-    const updateCountdown = () => {
-      const now = new Date().getTime();
-      const distance = countdownDate - now;
+  // useEffect(() => {
+  //   const updateCountdown = () => {
+  //     const now = new Date().getTime();
+  //     const distance = countdownDate - now;
 
-      const newDays = Math.floor(distance / (1000 * 60 * 60 * 24));
-      const newHours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const newMinutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-      const newSeconds = Math.floor((distance % (1000 * 60)) / 1000);
+  //     const newDays = Math.floor(distance / (1000 * 60 * 60 * 24));
+  //     const newHours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  //     const newMinutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+  //     const newSeconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-      setDays(newDays.toString().padStart(2, '0'));
-      setHours(newHours.toString().padStart(2, '0'));
-      setMinutes(newMinutes.toString().padStart(2, '0'));
-      setSeconds(newSeconds.toString().padStart(2, '0'));
+  //     setDays(newDays.toString().padStart(2, '0'));
+  //     setHours(newHours.toString().padStart(2, '0'));
+  //     setMinutes(newMinutes.toString().padStart(2, '0'));
+  //     setSeconds(newSeconds.toString().padStart(2, '0'));
 
-      if (distance < 0) {
-        clearInterval(countdownInterval);
-        // You can add an action here when the countdown reaches zero
-      }
-    };
+  //     if (distance < 0) {
+  //       clearInterval(countdownInterval);
+  //       // You can add an action here when the countdown reaches zero
+        
+  //     }
+  //   };
 
-    updateCountdown(); // Initial update
+  //   updateCountdown(); // Initial update
 
-    const countdownInterval = setInterval(updateCountdown, 1000);
+  //   const countdownInterval = setInterval(updateCountdown, 1000);
 
-    return () => {
-      clearInterval(countdownInterval); // Clean up the interval when unmounting
-    };
-  }, []);
+  //   return () => {
+  //     clearInterval(countdownInterval); // Clean up the interval when unmounting
+  //   };
+  // }, []);
 
   return (
     <div style={{ display: 'flex', alignItems: 'center', height: '100vh' }}>
@@ -77,12 +78,13 @@ export default function CountDown({ unavailable }) {
               </Button>
             </Link>
           ) : (
-            <Button
-              className="rounded-sm justify-center mt-5 bg-thirst-blue px-20 py-2 text-sm font-semibold text-white shadow-md ring-2 ring-thirst-blue"
-              disabled
-            >
-              BILHETES ESGOTADOS
-            </Button>
+            <Link to="/doacoes">
+              <Button
+                className="rounded-sm justify-center mt-5 bg-thirst-blue px-20 py-2 text-sm font-semibold text-white shadow-md ring-2 ring-thirst-blue"
+              >
+                BILHETES ESGOTADOS | DOAR AGORA
+              </Button>
+            </Link>
           )}
         </div>
         <div className="text-center-home mt-14 mb-4" style={{ width: '50%' }}>

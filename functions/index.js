@@ -91,7 +91,7 @@ exports.moneyRequest = onDocumentCreated("ticketBuyer/{id}", async (event) => {
 });
 
 exports.moneyDonation = onDocumentUpdated(
-    "singleDonation/{id}", async (event) => {
+    "afterGala/{id}", async (event) => {
       const docId = event.params.id;
       const snapshot = event.data.after;
       if (!snapshot) {

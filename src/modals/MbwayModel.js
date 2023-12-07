@@ -1,7 +1,7 @@
 import { Fragment, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { Button, Image } from 'react-bootstrap'
-import logo from '../assets/gala_logo.png';
+import logo from '../assets/thirst.jpg';
 
 export default function MbwayModel({setMBwayModalVisible, changeFromMultibanco }) {
     const [open, setOpen] = useState(true)

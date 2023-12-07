@@ -74,6 +74,7 @@ export default function Donation({ setDonation, setPayment }) {
         if (amount === 0 || amount === '' || amount ==='Outro') {
             setAmountError(true);
             setBlockButton(false);
+            return;
         }
         if (!dedicationError && !nameError && !amountError && validEmail && !nifError.nif && !nifError.name && !nifError.address) {
             const info = {
@@ -249,27 +250,27 @@ export default function Donation({ setDonation, setPayment }) {
                     >
                         <Button
                             className={`rounded-md shadow-md ${window.innerWidth < 400 ? 'mb-4 sm:w-auto' : 'mx-2 w-full'} bg-thirst-blue px-6 py-2 text-sm font-semibold text-white shadow-md hover:bg-thirst-blue`}
-                            onClick={() => prepareAmount(100)}
+                            onClick={() => prepareAmount(1)}
                         >
-                            €100
+                            €1
                         </Button>
                         <Button
                             className={`rounded-md shadow-md ${window.innerWidth < 400 ? 'mb-4 sm:w-auto' : 'mx-2 w-full'} bg-thirst-blue px-6 py-2 text-sm font-semibold text-white shadow-md hover:bg-thirst-blue`}
-                            onClick={() => prepareAmount(500)}    
+                            onClick={() => prepareAmount(5)}    
                         >
-                            €500
+                            €5
                         </Button>
                         <Button
                             className={`rounded-md shadow-md ${window.innerWidth < 400 ? 'mb-4 sm:w-auto' : 'mx-2 w-full'} bg-thirst-blue px-6 py-2 text-sm font-semibold text-white shadow-md hover:bg-thirst-blue`}
-                            onClick={() => prepareAmount(1000)}
+                            onClick={() => prepareAmount(10)}
                         >
-                            €1000
+                            €10
                         </Button>
                         <Button
                             className={`rounded-md shadow-md ${window.innerWidth < 400 ? 'mb-4 sm:w-auto' : 'mx-2 w-full'} bg-thirst-blue px-6 py-2 text-sm font-semibold text-white shadow-md hover:bg-thirst-blue`}
-                            onClick={() => prepareAmount(3000)}
+                            onClick={() => prepareAmount(25)}
                         >
-                            €3000
+                            €25
                         </Button>
                     </div>
                 </div>

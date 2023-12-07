@@ -3,7 +3,7 @@ import Donation from '../components/Donation';
 import Payment from '../components/Payment';
 import SummaryDonations from '../components/SummaryDonations';
 import { Container, Image } from 'react-bootstrap';
-import logo from '../assets/gala_logo.png';
+import logo from '../assets/thirst.jpg';
 
 export default function DonationPage() {
     const [donation, setDonation] = useState({ name: '1. DOAÇÃO', status: 'current' });
@@ -12,7 +12,7 @@ export default function DonationPage() {
 
     return (
       <Container className="mx-auto px-14 py-7">
-        <div className="text-center mb-4"> {/* Center the image and the elements */}
+        <div className="text-center mb-4">
           <Image src={logo} alt="Thirst Gala" width={200} height={200} style={{ margin: "0 auto" }} /> {/* Use inline style to center the image */}
         </div>
         <div className="flex md:flex-row flex-col md:space-x-32 justify-center items-center">

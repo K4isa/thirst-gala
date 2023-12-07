@@ -1,6 +1,6 @@
 import React from 'react';
 import { Container, Image, Button } from 'react-bootstrap';
-import logo from '../assets/gala_logo.png';
+import logo from '../assets/thirst.jpg';
 import { Link } from 'react-router-dom';
 
 export default function HomePage() {
