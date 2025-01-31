@@ -1,0 +1,294 @@
+.container{
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto; 
+    margin-top: 2px;
+}
+
+.row-ticket{
+    flex: 1; 
+    padding: 32px; 
+}
+
+.title-ticket{
+    display: block; 
+    font-size: medium; 
+    font-weight: bold; 
+    line-height: 24px; 
+    color: #000;
+}
+
+.line{
+    width: 100%; 
+    margin-top: 0.25rem; 
+    box-shadow: 0 0 0 1px #17CACE; 
+}
+
+.date-text {
+    display: block; 
+    margin-top: 16px; 
+    font-size: 16px; 
+    font-weight: bold; 
+    color: #17CACE; 
+    text-align: center; 
+}
+
+.button-box{
+    margin-top: 20px;
+    display: flex; 
+    flex-direction: column; 
+    align-items: center;
+    justify-content: center; 
+
+}
+
+.select-col{
+    margin-top: 16px;
+    margin-bottom: 16px;
+}
+
+.select-row{ 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+}
+
+.button-select {
+    border-radius: 5px; 
+    background-color: #17CACE; 
+    padding: 4px; 
+    color: white; /* Define a cor do texto */
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.4); /* Sombra média (equivalente a shadow-md no Tailwind) */
+    transition: background-color 0.2s ease; /* Transição suave para o hover */
+}
+
+.button-select:hover {
+    background-color: black; /* Altera a cor de fundo ao passar o mouse */
+}
+
+.button-select:focus-visible {
+    outline: 2px solid black; /* Borda visível ao focar (cor equivalente a indigo-600) */
+    outline-offset: 2px; /* Distância entre a borda de foco e o elemento */
+}
+
+.qtd{
+    border-radius: 5px; 
+    background-color: #c9c9c9; 
+    padding-left:40px;
+    padding-right:40px;
+    padding-top: 4px;
+    padding-bottom: 4px; 
+    margin-inline-end: 12px; 
+    margin-inline-start: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+    display: flex; 
+    align-items: center; 
+}
+
+.qtd-text{
+    font-weight: bold;
+    color:white;
+}
+
+.text-box{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.info-text{ 
+    font-size: small;
+    font-weight: bold;
+    margin-bottom: 12px;
+    line-height: 24px;
+    color: #555;
+}
+
+.icon{
+    height: 20px;
+    width: 20px;
+}
+
+.error-text{
+    font-size: small;
+    color: red;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+}
+
+.amount{
+    font-size: x-large;
+    font-weight: bold;
+    justify-content: center;
+    display: flex;
+    margin-top: 16px;
+}
+
+@media (min-width: 768px) {
+    .container {
+        flex-direction: row; 
+    }
+}
+.background2 {
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+}
+
+.row1 {
+    width: 60%;
+    align-content: center;
+    z-index: 3;
+    margin: 7%;
+}
+
+.countdown {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap; /* Ajusta as caixas em telas pequenas */
+}
+
+.number {
+    color: #fff;
+}
+
+.title {
+    font-size: small;
+    line-height: 2;
+}
+
+.countdown-box {
+    font-weight: bold;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centraliza texto nos boxes */
+}
+
+.tab {
+    font-size: x-large;
+    font-weight: bold;
+}
+
+.subtext {
+    margin-top: 40px;
+    font-weight: bold;
+    color: #555;
+    width: 500px;
+    margin-bottom: 10px;
+}
+
+.text {
+    font-size: xx-large;
+    font-weight: bolder;
+    margin-bottom: 10px;
+}
+
+.date {
+    color: #17CACE;
+    font-weight: bolder;
+    font-size: large;
+    margin-bottom: 20px;
+}
+
+.row2 {
+    width: 40%;
+    align-content: center;
+    z-index: 3;
+}
+
+.button2 {
+    border-radius: 5px;
+    background-color: #17CACE;
+    margin-top: 10px;
+    padding: 10px 10px;
+    font-size: large;
+    font-weight: bold;
+    color: #fff;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.4);
+    width: 80%; /* Ajusta a largura do botão para telas menores */
+    max-width: 300px; /* Limita a largura máxima */
+    text-align: center;
+    display: block;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+   
+    margin-right: auto;
+}
+
+.button2:hover {
+    background-color: black;
+}
+
+/* Media Queries para Responsividade */
+@media (max-width: 1024px) {
+    .row1 {
+        width: 90%; /* Ajusta largura da linha em telas menores */
+        margin: 5%;
+    }
+
+    .row2 {
+        width: 90%; /* Ajusta largura da linha em telas menores */
+        margin: 5%;
+        display: flex;
+        justify-content: center;
+    }
+
+    .subtext, .text, .date {
+        text-align: center; /* Centraliza texto */
+    }
+}
+
+@media (max-width: 768px) {
+    .background2 {
+        flex-direction: column; /* Empilha os elementos verticalmente */
+    }
+
+    .countdown {
+        gap: 10px; /* Reduz o espaço entre boxes */
+        justify-content: center
+    }
+
+    .countdown-box {
+        font-size: 14px; /* Reduz tamanho do texto */
+    }
+
+    .subtext {
+        width: 100%; /* Ajusta largura do texto */
+    }
+
+    .button2 {
+        width: 100%; /* Botão ocupa largura total */
+        max-width: none; /* Remove limite de largura */
+    }
+}
+
+@media (max-width: 480px) {
+    .title {
+        font-size: 12px; /* Reduz tamanho da fonte */
+    }
+
+    .tab {
+        font-size: large; /* Ajusta tamanho do texto nos boxes */
+    }
+
+    .text {
+        font-size: x-large; /* Reduz tamanho do texto principal */
+    }
+
+    .subtext {
+        margin-top: 30px;
+    }
+
+    .number{
+        font-size: large;
+    }
+}

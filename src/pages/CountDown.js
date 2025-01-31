@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Image, Button } from 'react-bootstrap';
-import logo from '../assets/gala_logo.png';
+import logo from '../assets/gala_logo2025.png';
 import { Link } from 'react-router-dom';
+import backgroundImage from '../assets/container1.png'; // Certifique-se de ter a imagem de fundo no caminho correto
+import '../style/style.css'
 
 export default function CountDown({ unavailable }) {
   const [days, setDays] = useState('00');
@@ -9,88 +11,102 @@ export default function CountDown({ unavailable }) {
   const [minutes, setMinutes] = useState('00');
   const [seconds, setSeconds] = useState('00');
 
-  //const countdownDate = new Date('2023-11-11 20:00:00').getTime();
+  const countdownDate = new Date('2025-03-22 20:00:00').getTime();
 
-  // useEffect(() => {
-  //   const updateCountdown = () => {
-  //     const now = new Date().getTime();
-  //     const distance = countdownDate - now;
+  useEffect(() => {
+    const updateCountdown = () => {
+      const now = new Date().getTime();
+      const distance = countdownDate - now;
 
-  //     const newDays = Math.floor(distance / (1000 * 60 * 60 * 24));
-  //     const newHours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-  //     const newMinutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-  //     const newSeconds = Math.floor((distance % (1000 * 60)) / 1000);
+      const newDays = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const newHours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const newMinutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const newSeconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-  //     setDays(newDays.toString().padStart(2, '0'));
-  //     setHours(newHours.toString().padStart(2, '0'));
-  //     setMinutes(newMinutes.toString().padStart(2, '0'));
-  //     setSeconds(newSeconds.toString().padStart(2, '0'));
+      setDays(newDays.toString().padStart(2, '0'));
+      setHours(newHours.toString().padStart(2, '0'));
+      setMinutes(newMinutes.toString().padStart(2, '0'));
+      setSeconds(newSeconds.toString().padStart(2, '0'));
 
-  //     if (distance < 0) {
-  //       clearInterval(countdownInterval);
-  //       // You can add an action here when the countdown reaches zero
-        
-  //     }
-  //   };
+      if (distance < 0) {
+        clearInterval(countdownInterval);
+        // You can add an action here when the countdown reaches zero
 
-  //   updateCountdown(); // Initial update
+      }
+    };
 
-  //   const countdownInterval = setInterval(updateCountdown, 1000);
+    updateCountdown(); // Initial update
 
-  //   return () => {
-  //     clearInterval(countdownInterval); // Clean up the interval when unmounting
-  //   };
-  // }, []);
+    const countdownInterval = setInterval(updateCountdown, 1000);
+
+    return () => {
+      clearInterval(countdownInterval); // Clean up the interval when unmounting
+    };
+  }, []);
 
   return (
-    <div style={{ display: 'flex', alignItems: 'center', height: '100vh' }}>
-      <Container className="mx-auto px-14 py-7 flex flex-row justify-center home-page" style={{ width: '100%' }}>
-        <div className="text-start mb-4 flex flex-col first-col" style={{ width: '50%' }}>
-          <div className="flex flex-row countdown-container mb-5">
-            <div className="countdown-box font-bold flex flex-col">
-              <span className="text-thirst-blue">{days}</span>
-              <span className="text-xs mt-2">DIAS</span>
-            </div>
-            <div className="countdown-box font-bold flex flex-col">
-              <span className="text-thirst-blue">{hours}</span>
-              <span className="text-xs mt-2">HORAS</span>
-            </div>
-            <div className="countdown-box font-bold flex flex-col">
-              <span className="text-thirst-blue">{minutes}</span>
-              <span className="text-xs mt-2">MINUTOS</span>
-            </div>
-            <div className="countdown-box font-bold flex flex-col">
-              <span className="text-thirst-blue">{seconds}</span>
-              <span className="text-xs mt-2">SEGUNDOS</span>
-            </div>
+    <div
+      className='background2'
+      style={{
+        backgroundImage: `url(${backgroundImage})`,
+      }}
+    >
+      <div className='overlay' />
+      <div className='row1'>
+        <div className="countdown">
+          <div className="countdown-box">
+            <span className="number">{days}</span>
+            <span className="title">DIAS</span>
           </div>
-          <h3 className="text-thirst-darker-grey mt-10 text-sm font-bold">A MAIOR ORGANIZAÇÃO JOVEM DO MUNDO COM A MISSÃO DE ACABAR COM A CRISE MUNDIAL DE ÁGUA APRESENTA</h3>
-          <h1 className="text-thirst-blue text-4xl font-bold mt-4">PRIMEIRA GALA THIRST PROJECT PORTUGAL</h1>
-          <h3 className="block mt-4 text-lg font-bold text-thirst-blue">
-            11 de novembro | 20:00
-          </h3>
-          {!unavailable ? (
-            <Link to="/bilhetes/comprar">
-              <Button
-                className="rounded-sm justify-center mt-5 bg-thirst-blue px-20 py-2 text-sm font-semibold text-white shadow-md hover:bg-white/10 hover:text-thirst-blue ring-2 ring-thirst-blue hover:ring-thirst-blue"
-              >
-                RESERVAR O MEU LUGAR!
-              </Button>
-            </Link>
-          ) : (
-            <Link to="/doacoes">
-              <Button
-                className="rounded-sm justify-center mt-5 bg-thirst-blue px-20 py-2 text-sm font-semibold text-white shadow-md ring-2 ring-thirst-blue"
-              >
-                BILHETES ESGOTADOS | DOAR AGORA
-              </Button>
-            </Link>
-          )}
+          <h1 className="tab">
+            :
+          </h1>
+          <div className="countdown-box">
+            <span className="number">{hours}</span>
+            <span className="title">HORAS</span>
+          </div>
+          <h1 className="tab">
+            :
+          </h1>
+          <div className="countdown-box">
+            <span className="number">{minutes}</span>
+            <span className="title">MINUTOS</span>
+          </div>
+          <h1 className="tab">
+            :
+          </h1>
+          <div className="countdown-box">
+            <span className="number">{seconds}</span>
+            <span className="title">SEGUNDOS</span>
+          </div>
         </div>
-        <div className="text-center-home mt-14 mb-4" style={{ width: '50%' }}>
-          <Image src={logo} alt="Thirst Gala" width={350} height={350} style={{ margin: "0 auto" }} />
-        </div>
-      </Container>
+        <h3 className="subtext">A MAIOR ORGANIZAÇÃO JOVEM DO MUNDO COM A MISSÃO DE ACABAR COM A CRISE MUNDIAL DE ÁGUA APRESENTA</h3>
+        <h1 className="text">II GALA THIRST PROJECT PORTUGAL</h1>
+        <h3 className="date">
+          22 de março | 20:00
+        </h3>
+        {unavailable ? (
+          <Link to="/bilhetes/comprar">
+            <Button
+              className="button2"
+            >
+              RESERVAR O MEU LUGAR!
+            </Button>
+          </Link>
+        ) : (
+          <Link to="/doacoes">
+            <Button
+              className="button2"
+            >
+              BILHETES ESGOTADOS | DOAR AGORA
+            </Button>
+          </Link>
+        )}
+      </div>
+      <div className="row2">
+        <Image src={logo} alt="Thirst Gala" width={350} height={350} />
+      </div>
+
     </div>
   );
 }
