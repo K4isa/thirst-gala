@@ -4,7 +4,7 @@ import Contribution from '../components/Contribution';
 import Info from '../components/Info';
 import Summary from '../components/Summary';
 import { Container, Image } from 'react-bootstrap';
-import logo from '../assets/gala_logo.png';
+import logo from '../assets/gala_logo2025.png';
 
 export default function TicketPage() {
     const [ticket, setTicket] = useState({ name: '1. BILHETE', status: 'current' });
