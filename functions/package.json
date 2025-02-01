@@ -4,10 +4,10 @@
   "scripts": {
     "lint": "echo 'Skipping lint'",
     "build": "tsc",
-    "serve": "npm run build && firebase emulators:start",
+    "serve": "firebase emulators:start --only functions",
     "shell": "firebase functions:shell",
     "start": "npm run shell",
-    "deploy": "npm run build && firebase deploy",
+    "deploy": "firebase deploy --only functions",
     "logs": "firebase functions:log"
   },
   "engines": {
@@ -15,6 +15,7 @@
   },
   "main": "index.js",
   "dependencies": {
+    "angular-cli-ghpages": "^2.0.3",
     "axios": "^1.5.1",
     "firebase-admin": "^11.8.0",
     "firebase-functions": "^4.3.1"

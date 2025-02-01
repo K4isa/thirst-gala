@@ -1,5 +1,6 @@
 import { initializeApp } from 'firebase/app';
 import { getFirestore, collection, getDoc, getDocs, addDoc, updateDoc, doc } from 'firebase/firestore';
+var a = 1;
 
 const firebaseConfig = {
   apiKey: "AIzaSyCf8nL9QzhgMVKCgwCT4_sJSmq4qRqhPgE",
@@ -9,7 +10,7 @@ const firebaseConfig = {
   messagingSenderId: "543596237296",
   appId: "1:543596237296:web:912570ebf0cdae91138d35",
   measurementId: "G-L6HCMQ1Y8M"
-};
+}; 
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
