@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "gala-9cabb"
-  }
+    "default": "gala-9cabb-67f6e",
+    "gala-9cabb-67f6e": "gala-9cabb-67f6e"
+  },
+  "targets": {},
+  "etags": {}
 }

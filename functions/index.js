@@ -1,5 +1,6 @@
 const axios = require("axios");
 const logger = require("firebase-functions/logger");
+const chave_EUPAGO = "4f28-e58a-f00e-8f85-9517";
 const {
   onDocumentCreated, onDocumentUpdated,
 } = require("firebase-functions/v2/firestore");
@@ -15,13 +16,13 @@ exports.moneyRequest = onDocumentCreated("ticketBuyer/{id}", async (event) => {
   if (data.type === "mbway") {
     const options = {
       method: "POST",
-      url: "https://clientes.eupago.pt/clientes/rest_api/mbway/create",
+      url: "https://clientes.eupago.pt/api/v1.02/mbway/create",
       headers: {
         "accept": "application/json",
         "content-type": "application/json",
       },
       data: {
-        chave: process.env.EU_PAGO,
+        chave: chave_EUPAGO,
         valor: data.total,
         alias: data.phone,
         email: data.email,
@@ -59,7 +60,7 @@ exports.moneyRequest = onDocumentCreated("ticketBuyer/{id}", async (event) => {
         "content-type": "application/json",
       },
       data: {
-        chave: process.env.EU_PAGO,
+        chave: chave_EUPAGO,
         valor: data.total,
         email: data.email,
         failOver: "1",
@@ -107,13 +108,13 @@ exports.moneyDonation = onDocumentUpdated(
       if (data.type === "mbway") {
         const options = {
           method: "POST",
-          url: "https://clientes.eupago.pt/clientes/rest_api/mbway/create",
+          url: "https://clientes.eupago.pt/api/v1.02/mbway/create",
           headers: {
             "accept": "application/json",
             "content-type": "application/json",
           },
           data: {
-            chave: process.env.EU_PAGO,
+            chave: chave_EUPAGO,
             valor: data.total,
             alias: data.phone,
             email: data.email,
@@ -152,7 +153,7 @@ exports.moneyDonation = onDocumentUpdated(
             "content-type": "application/json",
           },
           data: {
-            chave: process.env.EU_PAGO,
+            chave: chave_EUPAGO,
             valor: data.total,
             email: data.email,
             failOver: "1",
